@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<head>
+  <style>
+    .loading {
+      position: absolute;
+      top: 50px;
+      left: 0px;
+      width: 100vw;
+      height: calc(100vh - 50px);
+      background-color: antiquewhite;
+      margin: auto;
+      line-height: calc(100vh - 50px);
+      text-align: center;
+    }
+    .hide {
+      display: none;
+    }
+    .heading {
+      height: 50px;
+      line-height: 50px;
+      font-size: 24px;
+      background-color: aquamarine;
+      text-align: center;
+    }
+    .radio {
+      margin-right: 10px;
+      border: 1px solid black;
+      padding: 2px;
+      border-radius: 5px;
+    }
+    .buttons {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+    }
+    .button-padding {
+      margin: 0 5px;
+    }
+  </style>
+</head>
+<html>
+  <body>
+    <div class="loading" id="loading" onclick="()=>{}">
+      Loading...
+    </div>
+    <div class="content">
+
+      <div class="heading">Ookpik Waltz</div>
+
+      <div id="player"></div>
+
+      <div>
+        <label for="loop">Loop</label>
+        <input id="loop" type="checkbox" name="loop" onclick="setLoop()">
+      </div>
+
+      <div>
+        <p>
+          Speed:
+          <span class="radio">
+            <label for=".25">0.25</label>
+            <input type="radio" name="speed" id=".25" onclick="selectSpeed(0.25)">
+          </span>
+          
+          <span class="radio">
+            <label for=".5">0.5</label>
+            <input type="radio" name="speed" id=".5" onclick="selectSpeed(0.5)">
+          </span>
+          
+          <span class="radio">
+            <label for=".75">0.75</label>
+            <input type="radio" name="speed" id=".75" onclick="selectSpeed(0.75)">
+          </span>
+          
+          <span class="radio">
+            <label for="1">1</label>
+            <input type="radio" name="speed" id="1" onclick="selectSpeed(1)" checked>
+          </span>
+        </p>
+      </div>
+
+      <p>
+        <button onclick="stopVideo()">Stop</button>
+      </p>
+
+      <div id="buttons" class="buttons"></div>
+
+    </div>
+
+    <script>
+      const tag = document.createElement('script');
+      tag.src = "https://www.youtube.com/iframe_api";
+      const firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+      const buttons = document.getElementById('buttons');
+      let player;
+      let loop = false;
+      let playing = false;
+      let speed = 1;
+      let stillPlayingInterval;
+      let currentFunc;
+
+      function setLoop() {
+        loop = !loop;
+        document.getElementById('loop').checked = loop;
+        console.log('loop', loop)
+      }
+
+      function selectSpeed(v) {
+        speed = v;
+        player.setPlaybackRate(speed);
+        console.log(v);
+      }
+
+      function onYouTubeIframeAPIReady() {
+        player = new YT.Player('player', {
+          height: '200',
+          width: '400',
+          videoId: 'B2IwkS4xHIc',
+          playerVars: {
+            'playsinline': 1
+          },
+          events: {
+            'onReady': onPlayerReady,
+            // 'onStateChange': onPlayerStateChange,
+          }
+        });
+      }
+
+      function onPlayerReady(event) {
+        document.getElementById('loading').classList.add('hide');
+      }
+
+      function onPlayerStateChange(event) {
+        console.log( 'EVENT STATE CANGE', event.data )
+        /* 
+          YT.PlayerState = {
+            BUFFERING: 3
+            CUED: 5
+            ENDED: 0
+            PAUSED: 2
+            PLAYING: 1
+            UNSTARTED: -1
+          }
+        */
+      }
+
+      function stopVideo() {
+        player.stopVideo();
+        playing = false;
+        clearInterval( stillPlayingInterval);
+      }
+
+      function createButtonClickFunction( starting, ending ) {
+        const clickfuncion = () => {
+          playing = true;
+
+          stillPlayingInterval = setInterval( () => {
+            const state = player.getPlayerState();
+            console.log('still playing', state)
+            if ( playing && loop && (state === 0) ) {
+              clearInterval(stillPlayingInterval);
+              clickfuncion();
+            }
+            else if ( playing && (state === 0) ) {
+              clearInterval(stillPlayingInterval);
+              playing = false;
+            }
+          }, 50);
+
+          player.cueVideoById({
+            videoId: 'B2IwkS4xHIc',
+            startSeconds: starting,
+            endSeconds: ending
+          });
+          player.playVideo();
+        };
+
+        return clickfuncion;
+      }
+
+      function createButton(text, start, stop) {
+        const b = document.createElement('button');
+        b.className = 'button-padding';
+        b.innerText = text;
+        b.onclick = createButtonClickFunction( start, stop );
+        buttons.appendChild(b);
+      }
+
+      createButton( 'intro', 0, 10 );
+      createButton( 'a', 13, 30 );
+      createButton( 'a-1', 13, 16 );
+      createButton( 'a-2', 17, 21 );
+      createButton( 'a-3', 22, 30 );
+      createButton( 'b', 49, 57);
+      createButton( 'b-1', 49, 53);
+      createButton( 'b-2', 54, 57);
+
+
+    </script>
+  </body>
+</html>
