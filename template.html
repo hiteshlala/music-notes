@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <head>
   <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no'>
-  <title>Ookpik Waltz</title>
+  <title>__SONG_TITLE__</title>
   <style>
     .loading {
       position: absolute;
@@ -47,9 +47,9 @@
     </div>
     <div class="content">
 
-      <div class="heading">Ookpik Waltz</div>
+      <div class="heading">__SONG_TITLE__</div>
 
-      <p><a href="https://www.youtube.com/watch?v=B2IwkS4xHIc">YouTube link</a></p>
+      <p><a href="__SONG_YOUTUBE_URL__">YouTube link</a></p>
 
       <div id="player"></div>
 
@@ -121,18 +121,33 @@
         player = new YT.Player('player', {
           height: '200',
           width: '400',
-          videoId: 'B2IwkS4xHIc',
+          videoId: '__SONG_ID__',
           playerVars: {
             'playsinline': 1
           },
           events: {
             'onReady': onPlayerReady,
+            // 'onStateChange': onPlayerStateChange,
           }
         });
       }
 
       function onPlayerReady(event) {
         document.getElementById('loading').classList.add('hide');
+      }
+
+      function onPlayerStateChange(event) {
+        console.log( 'EVENT STATE CANGE', event.data )
+        /* 
+          YT.PlayerState = {
+            BUFFERING: 3
+            CUED: 5
+            ENDED: 0
+            PAUSED: 2
+            PLAYING: 1
+            UNSTARTED: -1
+          }
+        */
       }
 
       function stopVideo() {
@@ -180,6 +195,7 @@
         buttons.appendChild(b);
       }
 
+      // __SONG_FRAGMENTS_BUTTONS__
       createButton( 'intro', 0, 10 );
       createButton( 'a', 13, 30 );
       createButton( 'a-1', 13, 16 );
