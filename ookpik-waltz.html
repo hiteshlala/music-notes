@@ -157,6 +157,9 @@
 
       function createButtonClickFunction( starting, ending ) {
         const clickfuncion = () => {
+          if (playing) {
+            clearInterval(stillPlayingInterval);
+          }
           playing = true;
 
           stillPlayingInterval = setInterval( () => {
