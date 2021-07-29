@@ -1,4 +1,4 @@
-# Music Notes & Transcription
+# <img src="logo.png" width="25px"> Music Notes & Transcription
 
 Html links and youtube repeater to help learn songs
 
