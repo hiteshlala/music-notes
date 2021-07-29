@@ -34,10 +34,11 @@
       display: flex;
       flex-direction: row;
       justify-content: flex-start;
+      flex-wrap: wrap;
     }
     .button-padding {
-      margin: 0 5px;
-      min-width: 30px;
+      margin: 5px;
+      min-width: 60px;
       height: 30px;
     }
   </style>
@@ -86,7 +87,7 @@
       </div>
 
       <p>
-        <button onclick="stopVideo()">Stop</button>
+        <button class="button-padding" onclick="stopVideo()">Stop</button>
       </p>
 
       <div id="buttons" class="buttons"></div>
