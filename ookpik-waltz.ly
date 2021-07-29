@@ -49,12 +49,42 @@
       d4 b d(
       d2) d4 \glissando
       e d8 [e] fis [e]
-      
+      \break
+      d4 b8 [a] b a
+      b4. a8 b [a]
+      g [fis] e4. b8(
+      c) [e] g [a] b4 
+      a e8 [fis] a4
+      g r2 
+
+
 
     } 
   }
   \header {
     piece = "Part A"
+  }
+}
+
+\score {
+  \relative c'' {
+    {
+      \time 3/4
+      \clef treble
+      \key e \minor
+      
+      b8 [b] b [b] b4
+      a4 g8 c d4
+      b a b
+
+      a8 [a] a [a] b4
+      a4 g e 
+      d e8 [d] e4
+
+    } 
+  }
+  \header {
+    piece = "Part B"
   }
 }
 

@@ -1,5 +1,8 @@
+#!/usr/bin/env node
 const http = require( 'http' );
 const fs = require( 'fs' );
+const url = require('url');
+const path = require('path');
 
 const port = 5000;
 
@@ -16,15 +19,29 @@ const server = http.createServer(( req, res ) => {
   }
   
   else if ( req.method === 'GET' ) {
-    res.statusCode = 200;
+    // res.statusCode = 200;
     // res.setHeader( 'Content-Type', 'application/json');
     // const data = {
     //   message: 'success'
     // };
     // res.end( JSON.stringify( data ) );
+    
+    const filename = path.basename( req.url );
+    const fexists = filename && fs.existsSync( filename );
+    let type = 'text/html';
+    if ( /.pdf/.test(filename) ) { type = 'application/pdf'; }
+    if ( /.ly/.test(filename) ) { type = 'text/text'; }
 
-    res.setHeader( 'Content-Type', 'text/html');
-    fs.createReadStream('ookpik-waltz.html').pipe(res);
+    if ( fexists ) {
+      res.statusCode = 200;
+      res.setHeader( 'Content-Type', type);
+      fs.createReadStream( filename ).pipe(res);
+    }
+    else { //if ( req.url === '/' ) {
+      res.statusCode = 200;
+      res.setHeader( 'Content-Type', 'text/html');
+      fs.createReadStream('index.html').pipe(res);
+    }
   }
   
   else if ( req.method === 'POST' ) {
