@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<head>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no'>
+  <link rel="icon" href="logo.png" type="image/png">
+  <title>Blackest Crow</title>
+  <style>
+    .loading {
+      position: absolute;
+      top: 50px;
+      left: 0px;
+      width: 100vw;
+      height: calc(100vh - 50px);
+      background-color: antiquewhite;
+      margin: auto;
+      line-height: calc(100vh - 50px);
+      text-align: center;
+    }
+    .hide {
+      display: none;
+    }
+    .heading {
+      height: 50px;
+      line-height: 50px;
+      font-size: 24px;
+      background-color: aquamarine;
+      text-align: center;
+    }
+    .radio {
+      margin-right: 10px;
+      border: 1px solid black;
+      padding: 2px;
+      border-radius: 5px;
+    }
+    .buttons {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      flex-wrap: wrap;
+    }
+    .button-padding {
+      margin: 5px;
+      min-width: 60px;
+      height: 30px;
+    }
+  </style>
+</head>
+<html>
+  <body>
+    <div class="loading" id="loading" onclick="()=>{}">
+      Loading...
+    </div>
+    <div class="content">
+
+      <div class="heading">Blackest Crow</div>
+
+      <p>This page uses this version for learning:</p>
+      <p><a href="https://www.youtube.com/watch?v=d6jh1vqNvMs">Bruce Molsky, July Fowlis, .... </a></p>
+      <p>These are other renditions and variations:</p>
+      <p><a href="https://www.youtube.com/watch?v=Gnvb3cCeOj8">Bruce Molsky & Aoife O'Donovan</a></p>
+      <p><a href="https://www.youtube.com/watch?v=5H6IUQqG_U4">Meredith Moon</a></p>
+      <p><a href="https://www.youtube.com/watch?v=4wRnDa7GdzQ">Red Tail Ring</a></p>
+      <p><a href="https://www.youtube.com/watch?v=4cYdD8Trv9A">Dirk Powell · John Hermann · Tim O'Brien</a></p>
+
+      <audio id="player" controls src="Bruce-Molsky-with-Julie Fowlis-The-Blackest-Crow.mp3"></audio>
+
+      <div>
+        <label for="loop">Loop</label>
+        <input id="loop" type="checkbox" name="loop" onclick="setLoop()">
+      </div>
+
+      <div>
+        <p>
+          Speed:
+          <span class="radio">
+            <label for=".25">0.25</label>
+            <input type="radio" name="speed" id=".25" onclick="selectSpeed(0.25)">
+          </span>
+          
+          <span class="radio">
+            <label for=".5">0.5</label>
+            <input type="radio" name="speed" id=".5" onclick="selectSpeed(0.5)">
+          </span>
+          
+          <span class="radio">
+            <label for=".75">0.75</label>
+            <input type="radio" name="speed" id=".75" onclick="selectSpeed(0.75)">
+          </span>
+          
+          <span class="radio">
+            <label for="1">1</label>
+            <input type="radio" name="speed" id="1" onclick="selectSpeed(1)" checked>
+          </span>
+        </p>
+      </div>
+
+      <p>
+        <button class="button-padding" onclick="stopVideo()">Stop</button>
+      </p>
+
+      <div id="buttons" class="buttons"></div>
+
+      <!-- <object type="application/pdf" data="__SCORE_PDF__" width="400" height="640"></object> -->
+
+    </div>
+
+    <script>
+      const buttons = document.getElementById('buttons');
+      const player = document.getElementById('player');
+      let loop = false;
+      let playing = false;
+      let speed = 1;
+      let ontimeupdate;
+
+      player.addEventListener('loadeddata', onPlayerReady);
+      player.volume = 0.5;
+      
+
+      function setLoop() {
+        loop = !loop;
+        document.getElementById('loop').checked = loop;
+        console.log('loop', loop)
+      }
+
+      function selectSpeed(v) {
+        speed = v;
+        player.playbackRate = v;
+        console.log('speed', v);
+      }
+
+      function onPlayerReady(event) {
+        document.getElementById('loading').classList.add('hide');
+      }
+
+      function stopVideo() {
+        player.pause();
+        playing = false;
+      }
+
+      function createButtonClickFunction( starting, ending ) {
+        const clickfuncion = () => {
+          if( ontimeupdate ) {
+            player.removeEventListener('timeupdate', ontimeupdate );
+          }
+          player.currentTime = starting;
+          playing = true;
+          ontimeupdate = () => {
+            if ( player.currentTime >= ending ) {
+              if ( playing && loop ) {
+                player.pause();
+                player.currentTime = starting;
+                player.play();
+              }
+              else if ( playing ) {
+                player.pause();
+                player.removeEventListener('timeupdate', ontimeupdate );
+              }
+            }
+          };
+
+          player.addEventListener( 'timeupdate', ontimeupdate);
+          player.play();
+        };
+        return clickfuncion;
+      }
+
+      function createButton(text, start, stop) {
+        const b = document.createElement('button');
+        b.className = 'button-padding';
+        b.innerText = text;
+        b.onclick = createButtonClickFunction( start, stop );
+        buttons.appendChild(b);
+      }
+
+      // __SONG_FRAGMENTS_BUTTONS__
+      // createButton( 'intro', 0, 10 );
+      createButton( 'a', 13, 16 );
+      createButton( 'a-1', 17, 19 );
+      // createButton( 'a-2', 17, 21 );
+      // createButton( 'a-3', 22, 30 );
+      // createButton( 'b', 49, 57);
+      // createButton( 'b-1', 49, 53);
+      // createButton( 'b-2', 54, 57);
+
+
+    </script>
+  </body>
+</html>
