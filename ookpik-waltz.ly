@@ -11,7 +11,7 @@
 \header{
   title = "Ookpik Waltz"
   composer ="Frankie Rodgers"
-  copyright = "Transcribed by Lila Sklar & Hitesh Lala"
+  tagline = "Transcribed by Lila Sklar & Hitesh Lala"
 }
 
 \score {
