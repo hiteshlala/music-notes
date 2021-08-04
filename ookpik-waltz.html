@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <head>
   <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no'>
-  <title>Ookpik Waltz</title>
   <link rel="icon" href="logo.png" type="image/png">
+  <title>Ookpik Waltz</title>
   <style>
     .loading {
       position: absolute;
@@ -55,7 +55,7 @@
 
       <p><a href="https://www.youtube.com/watch?v=B2IwkS4xHIc">YouTube link</a></p>
 
-      <div id="player"></div>
+      <audio id="player" controls src="ookpik-waltz-Frankie-Rodgers.mp3"></audio>
 
       <div>
         <label for="loop">Loop</label>
@@ -98,18 +98,16 @@
     </div>
 
     <script>
-      const tag = document.createElement('script');
-      tag.src = "https://www.youtube.com/iframe_api";
-      const firstScriptTag = document.getElementsByTagName('script')[0];
-      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
       const buttons = document.getElementById('buttons');
-      let player;
+      const player = document.getElementById('player');
       let loop = false;
       let playing = false;
       let speed = 1;
-      let stillPlayingInterval;
-      let currentFunc;
+      let ontimeupdate;
+
+      player.addEventListener('loadeddata', onPlayerReady);
+      player.volume = 0.5;
+      
 
       function setLoop() {
         loop = !loop;
@@ -119,22 +117,8 @@
 
       function selectSpeed(v) {
         speed = v;
-        player.setPlaybackRate(speed);
-        console.log(v);
-      }
-
-      function onYouTubeIframeAPIReady() {
-        player = new YT.Player('player', {
-          height: '200',
-          width: '400',
-          videoId: 'B2IwkS4xHIc',
-          playerVars: {
-            'playsinline': 1
-          },
-          events: {
-            'onReady': onPlayerReady,
-          }
-        });
+        player.playbackRate = v;
+        console.log('speed', v);
       }
 
       function onPlayerReady(event) {
@@ -142,39 +126,34 @@
       }
 
       function stopVideo() {
-        player.stopVideo();
+        player.pause();
         playing = false;
-        clearInterval( stillPlayingInterval);
       }
 
       function createButtonClickFunction( starting, ending ) {
         const clickfuncion = () => {
-          if (playing) {
-            clearInterval(stillPlayingInterval);
+          if( ontimeupdate ) {
+            player.removeEventListener('timeupdate', ontimeupdate );
           }
+          player.currentTime = starting;
           playing = true;
-
-          stillPlayingInterval = setInterval( () => {
-            const state = player.getPlayerState();
-            console.log('still playing', state)
-            if ( playing && loop && (state === 0) ) {
-              clearInterval(stillPlayingInterval);
-              clickfuncion();
+          ontimeupdate = () => {
+            if ( player.currentTime >= ending ) {
+              if ( playing && loop ) {
+                player.pause();
+                player.currentTime = starting;
+                player.play();
+              }
+              else if ( playing ) {
+                player.pause();
+                player.removeEventListener('timeupdate', ontimeupdate );
+              }
             }
-            else if ( playing && (state === 0) ) {
-              clearInterval(stillPlayingInterval);
-              playing = false;
-            }
-          }, 50);
+          };
 
-          player.cueVideoById({
-            videoId: 'B2IwkS4xHIc',
-            startSeconds: starting,
-            endSeconds: ending
-          });
-          player.playVideo();
+          player.addEventListener( 'timeupdate', ontimeupdate);
+          player.play();
         };
-
         return clickfuncion;
       }
 
@@ -186,6 +165,7 @@
         buttons.appendChild(b);
       }
 
+      // __SONG_FRAGMENTS_BUTTONS__
       createButton( 'Intro', 0, 10 );
       createButton( 'A', 13, 30 );
       createButton( 'A-1', 13, 16 );
