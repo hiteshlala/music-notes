@@ -40,24 +40,24 @@
       \time 3/4
       \clef treble
       \key e \minor
-      r2 d,4 
-      g4. fis8 g[ b]
-      a4 fis d
-      g2.
-      r2 d'4 \glissando
-      e d8 [e] fis [e]
-      d4 b d(
-      d2) d4 \glissando
-      e d8 [e] fis [e]
-      \break
-      d4 b8 [a] b a
-      b4. a8 b [a]
-      g [fis] e4. b8(
-      c) [e] g [a] b4 
-      a e8 [fis] a4
-      g r2 
-
-
+      r2 d,4 \fermata
+      \repeat volta 2 {
+        g4. fis8 g[ b]
+        a4 fis d
+        g2.
+        r2 d'4 \glissando
+        e4. dis8 e [fis] 
+        e4 d b
+        d2.
+        r2 d4 \glissando
+        e4. dis8 e [fis]
+        e4 d b8 [a] 
+        \grace {a8} b4. a8 b [a]
+        g [fis] e4 b8([c]) 
+        e4 g \grace {a8} b4 
+        a fis \glissando a
+        g2. 
+      }
 
     } 
   }
@@ -72,15 +72,17 @@
       \time 3/4
       \clef treble
       \key e \minor
-      
-      b8 [b] b [b] b4
-      a4 g8 c d4
-      b a b
-
-      a8 [a] a [a] b4
-      a4 g e 
-      d e8 [d] e4
-
+      \repeat volta 2 {
+        \bar ".|:"
+        e4 \staccato b8 [b] b [b] 
+        b4 a4 g8 b
+        d4 b a 
+        b2.
+        a4 \staccato a8 [a] a [a] 
+        \grace {a8} b4 a4 g 
+        e d b8 [c] 
+        <e b'>2.
+      }
     } 
   }
   \header {
