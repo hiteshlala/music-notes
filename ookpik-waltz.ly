@@ -10,7 +10,7 @@
 
 \header{
   title = "Ookpik Waltz"
-  composer ="Frankie Rodgers"
+  composer = "Frankie Rodgers"
   tagline = "Transcribed by Lila Sklar & Hitesh Lala"
 }
 
@@ -80,7 +80,7 @@
         b2.
         a4 \staccato a8 [a] a [a] 
         \grace {a8} b4 a4 g 
-        e d b8 [c] 
+        e d b8 [d] 
         <e b'>2.
       }
     } 
@@ -90,3 +90,21 @@
   }
 }
 
+
+\score {
+  \relative c'' {
+    {
+      \time 3/4
+      \clef treble
+      \key e \minor
+      g4. 
+      fis8 [g]  (fis4 \glissando  e4.)
+      b8 ([c])  e4
+      g \grace {a8} b4 a4
+      fis d <e b>2.
+    } 
+  }
+  \header {
+    piece = "Outro"
+  }
+}
