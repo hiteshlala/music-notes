@@ -40,8 +40,9 @@
       \time 3/4
       \clef treble
       \key e \minor
-      r2 d,4 \fermata
       \repeat volta 2 {
+        \bar ".|:"
+        r2 d,4 \fermata
         g4. fis8 g[ b]
         a4 fis d
         g2.
