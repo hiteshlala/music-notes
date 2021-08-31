@@ -98,8 +98,8 @@
       \time 3/4
       \clef treble
       \key e \minor
-      g4. 
-      fis8 [g]  (fis4 \glissando  e4.)
+      g4. fis8 [g (fis)]  
+      \glissando  e2
       b8 ([c])  e4
       g \grace {a8} b4 a4
       fis d <e b>2.
