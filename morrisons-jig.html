@@ -56,6 +56,11 @@
     .align-end {
       text-align: end;
     }
+    .score {
+      margin-top: 15px;
+      max-width: 500px;
+      width: 100vw;
+    }
   </style>
 </head>
 <html>
@@ -109,7 +114,7 @@
       <div id="buttons" class="buttons"></div>
 
       <!-- <object type="application/pdf" data="__SCORE_PDF__" width="400" height="640"></object> -->
-
+      <img class="score" src="morrisons-jig.jpg"/>
     </div>
 
     <script>
@@ -181,8 +186,17 @@
       }
 
       // __SONG_FRAGMENTS_BUTTONS__
-      // createButton( 'intro', 0, 10 );
       createButton( 'Entire', 0, 116);
+      createButton( 'A', 10.7, 36);
+      createButton( 'A - 1', 10.7, 19);
+      createButton( 'A - 2', 19, 23);
+      createButton( 'A - 3', 23, 29);
+      createButton( 'A - 4', 28, 36);
+      createButton( 'B', 61, 116);
+      createButton( 'B - 1', 61, 60 + 8);
+      createButton( 'B - 2', 60 + 7, 60 + 15);
+      createButton( 'B - 3', 60 + 15, 60 + 25);
+      createButton( 'B - 4', 60 + 25, 60 + 56);
 
 
     </script>
