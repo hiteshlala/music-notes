@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<head>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no'>
+  <link rel="icon" href="logo.png" type="image/png">
+  <title>Coffee for Dora</title>
+  <style>
+    .loading {
+      position: absolute;
+      top: 50px;
+      left: 0px;
+      width: 100vw;
+      height: calc(100vh - 50px);
+      background-color: antiquewhite;
+      margin: auto;
+      line-height: calc(100vh - 50px);
+      text-align: center;
+    }
+    .hide {
+      display: none;
+    }
+    .heading {
+      height: 50px;
+      line-height: 50px;
+      font-size: 24px;
+      border-bottom: 1px solid black;
+      text-align: center;
+    }
+    .radio {
+      margin-right: 10px;
+      border: 1px solid black;
+      padding: 2px;
+      border-radius: 5px;
+    }
+    .buttons {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      flex-wrap: wrap;
+    }
+    .button-padding {
+      margin: 5px;
+      min-width: 60px;
+      height: 30px;
+    }
+    @media( max-width: 500px) {
+      .content {
+        margin: 0px;
+      }
+    }
+    @media ( min-width: 500px) {
+      .content {
+        max-width: 500px;
+        margin: 0px auto;
+      }
+    }
+    .align-end {
+      text-align: end;
+    }
+    .score {
+      margin-top: 15px;
+      max-width: 500px;
+      width: 100vw;
+    }
+
+    .tracks {
+      display: flex;
+      flex-direction: row;
+    }
+    .track-buttons {
+      margin: 5px;
+    }
+
+  </style>
+</head>
+<html>
+  <body>
+    <div class="loading" id="loading" onclick="()=>{}">
+      Loading...
+    </div>
+    <div class="content">
+
+      <div class="heading">Coffee for Dora</div>
+      <p class="align-end"><a href="index.html">Home</a></p>
+
+      <p><a href="https://www.georgianettleton.com/" target="_blank">Played by Georgia Nettleton</a></p>
+
+
+      <audio id="player1" controls src="Celtic Fiddle Music - Georgia Nettleton - Celtic Fiddle Harmony Sheet Music Multipack 2 - 08 Coffee for Dora.mp3"></audio>
+      <audio id="player2" controls src="Celtic Fiddle Music - Georgia Nettleton - Celtic Fiddle Harmony Sheet Music Multipack 2 - 33 Coffee for Dora Practise Mix Part 2.mp3"></audio>
+      <audio id="player3" controls src="Celtic Fiddle Music - Georgia Nettleton - Celtic Fiddle Harmony Sheet Music Multipack 2 - 34 Coffee for Dora Practise Mix Part 3.mp3"></audio>
+
+
+      <div class="tracks">
+        <button class="track-buttons" onclick="player=player1;">Part 1</button>
+        <button class="track-buttons" onclick="player=player2;">Part 2</button>
+        <button class="track-buttons" onclick="player=player3;">Part 3</button>
+      </div>
+      <div>
+        <label for="loop">Loop</label>
+        <input id="loop" type="checkbox" name="loop" onclick="setLoop()">
+      </div>
+
+      <div>
+        <p>
+          Speed:
+          <span class="radio">
+            <label for=".25">0.25</label>
+            <input type="radio" name="speed" id=".25" onclick="selectSpeed(0.25)">
+          </span>
+          
+          <span class="radio">
+            <label for=".5">0.5</label>
+            <input type="radio" name="speed" id=".5" onclick="selectSpeed(0.5)">
+          </span>
+          
+          <span class="radio">
+            <label for=".75">0.75</label>
+            <input type="radio" name="speed" id=".75" onclick="selectSpeed(0.75)">
+          </span>
+          
+          <span class="radio">
+            <label for="1">1</label>
+            <input type="radio" name="speed" id="1" onclick="selectSpeed(1)" checked>
+          </span>
+        </p>
+      </div>
+
+      <p>
+        <button class="button-padding" onclick="stopVideo()">Stop</button>
+      </p>
+
+      <div id="buttons" class="buttons"></div>
+
+      <object class="score" data="Celtic Fiddle Music - Georgia Nettleton - Celtic Fiddle Harmony Sheet Music Multipack 2 - coffee for dora.pdf" width="400" height="760"></object>
+    </div>
+
+    <script>
+      const buttons = document.getElementById('buttons');
+      const player1 = document.getElementById('player1');
+      const player2 = document.getElementById('player2');
+      const player3 = document.getElementById('player3');
+      let player = player1;
+
+      let loop = false;
+      let playing = false;
+      let speed = 1;
+      let ontimeupdate;
+
+      player.addEventListener('loadeddata', onPlayerReady);
+      player.volume = 0.5;
+      
+
+      function setLoop() {
+        loop = !loop;
+        document.getElementById('loop').checked = loop;
+        console.log('loop', loop)
+      }
+
+      function selectSpeed(v) {
+        speed = v;
+        player.playbackRate = v;
+        console.log('speed', v);
+      }
+
+      function onPlayerReady(event) {
+        document.getElementById('loading').classList.add('hide');
+      }
+
+      function stopVideo() {
+        player.pause();
+        playing = false;
+      }
+
+      function createButtonClickFunction( starting, ending ) {
+        const clickfuncion = () => {
+          if( ontimeupdate ) {
+            player.removeEventListener('timeupdate', ontimeupdate );
+          }
+          player.currentTime = starting;
+          playing = true;
+          ontimeupdate = () => {
+            if ( player.currentTime >= ending ) {
+              if ( playing && loop ) {
+                player.pause();
+                player.currentTime = starting;
+                player.play();
+              }
+              else if ( playing ) {
+                player.pause();
+                player.removeEventListener('timeupdate', ontimeupdate );
+              }
+            }
+          };
+
+          player.addEventListener( 'timeupdate', ontimeupdate);
+          player.play();
+        };
+        return clickfuncion;
+      }
+
+      function createButton(text, start, stop) {
+        const b = document.createElement('button');
+        b.className = 'button-padding';
+        b.innerText = text;
+        b.onclick = createButtonClickFunction( start, stop );
+        buttons.appendChild(b);
+      }
+
+      // __SONG_FRAGMENTS_BUTTONS__
+      createButton( 'Entire', 0, 116);
+
+    </script>
+  </body>
+</html>
