@@ -18,3 +18,8 @@ Then use an `<audio/>` tag to embed in html.
 ## Characters for Copy Pasting
 
 ♩	 ♪	 ♫ 	♬	 ♭  ♮ 	♯
+
+
+
+## To Learn
+https://www.youtube.com/watch?v=HHEEln4hlCM  13:51 - 14:52
