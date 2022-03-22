@@ -76,16 +76,16 @@
       <div class="heading">Neil Gow's Lament</div>
       <p class="align-end"><a href="index.html">Home</a></p>
 
-      <!-- <p>Played by Lila Sklar for a lesson</p> -->
+      <p>Played by Lila Sklar for a lesson</p>
 
-      <!-- <audio id="player" controls src="maloneys-wife_Lila-Sklar.m4a"></audio> -->
+      <audio id="player" controls src="neil-gows-lament_Lila-Sklar.m4a"></audio>
 
-      <!-- <div>
+      <div>
         <label for="loop">Loop</label>
         <input id="loop" type="checkbox" name="loop" onclick="setLoop()">
-      </div> -->
+      </div>
 
-      <!-- <div>
+      <div>
         <p>
           Speed:
           <span class="radio">
@@ -108,18 +108,18 @@
             <input type="radio" name="speed" id="1" onclick="selectSpeed(1)" checked>
           </span>
         </p>
-      </div> -->
+      </div>
 
-      <!-- <p>
+      <p>
         <button class="button-padding" onclick="stopVideo()">Stop</button>
-      </p> -->
+      </p>
 
-      <!-- <div id="buttons" class="buttons"></div> -->
+      <div id="buttons" class="buttons"></div>
 
-      <!-- <div>
+      <div>
         <button class="button-padding" onclick="slider.useSliders()">Use Sliders</button>
       </div>
-      <div id="slider" class="slider"></div> -->
+      <div id="slider" class="slider"></div>
 
       <img class="score" src="neil-gows-lament-1.jpg"/>
       <img class="score" src="neil-gows-lament-2.jpg"/>
@@ -129,14 +129,14 @@
     <script src="double-slider.js"></script>
     <script>
       const buttons = document.getElementById('buttons');
-      // const player = document.getElementById('player');
+      const player = document.getElementById('player');
       let loop = false;
       let playing = false;
       let speed = 1;
       let ontimeupdate;
 
-      // player.addEventListener('loadeddata', onPlayerReady);
-      // player.volume = 0.5;
+      player.addEventListener('loadeddata', onPlayerReady);
+      player.volume = 0.5;
       
 
       function setLoop() {
@@ -196,15 +196,14 @@
       }
 
       // __SONG_FRAGMENTS_BUTTONS__
-      // createButton( 'Entire', 0, 46 );
-      // createButton( 'Just Song', 3, 44 );
+      createButton( 'Entire', 3, 124.9 );
 
 
       class Slider extends DoubleSlider {
         constructor(...args) {
           super(...args);
           const songStarts = 0;
-          const songEnds = 46;
+          const songEnds = 137;
 
           // fractional seconds
           this.min = songStarts * 10;
@@ -271,8 +270,8 @@
         }
       }
 
-      // const slider = new Slider('slider');
-      // slider.init();
+      const slider = new Slider('slider');
+      slider.init();
 
     </script>
   </body>

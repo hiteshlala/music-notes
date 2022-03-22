@@ -62,13 +62,16 @@
       width: auto;
       height: 500px;
     }
+    .slider {
+      margin: 10px 0px;
+    }
   </style>
 </head>
 <html>
   <body>
-    <div class="loading" id="loading" onclick="()=>{}">
+    <!-- <div class="loading" id="loading" onclick="()=>{}">
       Loading...
-    </div>
+    </div> -->
     <div class="content">
 
       <div class="heading">King of The Fairies</div>
@@ -114,11 +117,16 @@
 
       <div id="buttons" class="buttons"></div>
 
-      <!-- <object type="application/pdf" data="__SCORE_PDF__" width="400" height="640"></object> -->
+      <div>
+        <button class="button-padding" onclick="slider.useSliders()">Use Sliders</button>
+      </div>
+      <div id="slider" class="slider"></div>
+
       <img class="rotate" src="king-of-the-fairies.jpeg"/>
 
     </div>
 
+    <script src="double-slider.js"></script>
     <script>
       const buttons = document.getElementById('buttons');
       const player = document.getElementById('player');
@@ -144,7 +152,7 @@
       }
 
       function onPlayerReady(event) {
-        document.getElementById('loading').classList.add('hide');
+        // document.getElementById('loading').classList.add('hide');
       }
 
       function stopVideo() {
@@ -188,7 +196,81 @@
       }
 
       // __SONG_FRAGMENTS_BUTTONS__
-      createButton( 'Entire', 0, 132 );
+      createButton( 'Entire', 6.9, 124.1 );
+
+      class Slider extends DoubleSlider {
+        constructor(...args) {
+          super(...args);
+          const songStarts = 0;
+          const songEnds = 132;
+
+          // fractional seconds
+          this.min = songStarts * 10;
+          this.max = songEnds * 10;
+          this.range = this.max - this.min;
+
+          // seconds, these are curr play values
+          this.startAt = songStarts;
+          this.endAt = songEnds;
+
+          this.ontimeupdate = this.ontimeupdate.bind(this);
+          this.useSliders = this.useSliders.bind(this);
+        }
+
+        startCB(val) {
+          const currVal = Math.round((this.range/1000) * val + this.min);
+          this.startAt = currVal/10;
+        }
+
+        endCB(val) {
+          const currVal = Math.round((this.range/1000) * val + this.min);
+          this.endAt = currVal/10;
+        }
+
+        labelFormat(val) {
+          const currVal = Math.round((this.range/1000) * val + this.min);
+          const seconds = Math.floor(currVal / 10);
+          const decisec = currVal - seconds * 10;
+          return `${seconds}.${decisec}`;
+        }
+
+        useSliders() {
+          if( ontimeupdate ) {
+            player.removeEventListener('timeupdate', ontimeupdate );
+          }
+          if (playing) { // stop when button pressed again
+            playing = false;
+            ontimeupdate = undefined;
+            player.pause();
+            player.removeEventListener('timeupdate', ontimeupdate );
+          }
+          else {
+            player.currentTime = this.startAt;
+            playing = true;
+            ontimeupdate = this.ontimeupdate;
+            player.addEventListener( 'timeupdate', ontimeupdate);
+            player.play();
+          }
+        }
+
+        ontimeupdate() {
+          if ( player.currentTime >= this.endAt ) {
+            if ( playing && loop ) {
+              player.pause();
+              player.currentTime = this.startAt;
+              player.play();
+            }
+            else if ( playing ) {
+              player.pause();
+              player.removeEventListener('timeupdate', ontimeupdate );
+              playing = false;
+            }
+          }
+        }
+      }
+
+      const slider = new Slider('slider');
+      slider.init();
 
 
     </script>
