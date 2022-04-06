@@ -2,7 +2,7 @@
 <head>
   <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no'>
   <link rel="icon" href="logo.png" type="image/png">
-  <title>Neil Gow's Lament</title>
+  <title>Humoresque</title>
   <style>
     .loading {
       position: absolute;
@@ -73,12 +73,12 @@
     </div> -->
     <div class="content">
 
-      <div class="heading">Neil Gow's Lament</div>
+      <div class="heading">Humoresque</div>
       <p class="align-end"><a href="index.html">Home</a></p>
 
       <p>Played by Lila Sklar for a lesson</p>
 
-      <audio id="player" controls src="neil-gows-lament_Lila-Sklar.m4a"></audio>
+      <audio id="player" controls src="humoresque_Lila-Sklar.m4a"></audio>
 
       <div>
         <label for="loop">Loop</label>
@@ -110,9 +110,9 @@
         </p>
       </div>
 
-      <p>
+      <!-- <p>
         <button class="button-padding" onclick="stopVideo()">Stop</button>
-      </p>
+      </p> -->
 
       <div id="buttons" class="buttons"></div>
 
@@ -121,8 +121,7 @@
       </div>
       <div id="slider" class="slider"></div>
 
-      <img class="score" src="neil-gows-lament-1.jpg"/>
-      <img class="score" src="neil-gows-lament-2.jpg"/>
+      <object type="application/pdf" data="humoresque_Dvorak.pdf" width="500" height="1400"></object>
 
     </div>
 
@@ -142,7 +141,10 @@
       function setLoop() {
         loop = !loop;
         document.getElementById('loop').checked = loop;
-        console.log('loop', loop)
+        console.log('loop', loop);
+        if(slider) {
+          slider.loop = !slider.loop;
+        }
       }
 
       function selectSpeed(v) {
@@ -162,27 +164,32 @@
 
       function createButtonClickFunction( starting, ending ) {
         const clickfuncion = () => {
-          if( ontimeupdate ) {
-            player.removeEventListener('timeupdate', ontimeupdate );
+          if (playing) { // stop when button pressed again
+            playing = false;
+            player.pause();
+            ontimeupdate && player.removeEventListener('timeupdate', ontimeupdate );
+            ontimeupdate = undefined;
           }
-          player.currentTime = starting;
-          playing = true;
-          ontimeupdate = () => {
-            if ( player.currentTime >= ending ) {
-              if ( playing && loop ) {
-                player.pause();
-                player.currentTime = starting;
-                player.play();
+          else {
+            player.currentTime = starting;
+            playing = true;
+            ontimeupdate = () => {
+              if ( player.currentTime >= ending ) {
+                if ( playing && loop ) {
+                  player.pause();
+                  player.currentTime = starting;
+                  player.play();
+                }
+                else if ( playing ) {
+                  playing = false;
+                  player.pause();
+                  player.removeEventListener('timeupdate', ontimeupdate );
+                }
               }
-              else if ( playing ) {
-                player.pause();
-                player.removeEventListener('timeupdate', ontimeupdate );
-              }
-            }
-          };
-
-          player.addEventListener( 'timeupdate', ontimeupdate);
-          player.play();
+            };
+            player.addEventListener( 'timeupdate', ontimeupdate);
+            player.play();
+          }
         };
         return clickfuncion;
       }
@@ -196,15 +203,18 @@
       }
 
       // __SONG_FRAGMENTS_BUTTONS__
-      createButton( 'Entire', 3, 124.9 );
-      createButton( 'A', 3, 34 );
+      createButton( 'Entire', 1.7, 216 );
+      createButton( 'A', 1.7, 27.9 );
+      createButton( '1.7-6.9', 1.7, 6.9 );
+      createButton( '6.9-15.8', 6.9, 15.8 );
+      createButton( '1.7-', 1.7, 15.9 );
 
 
       class Slider extends DoubleSlider {
         constructor(...args) {
           super(...args);
           const songStarts = 0;
-          const songEnds = 137;
+          const songEnds = 3*60 + 36;
 
           // fractional seconds
           this.min = songStarts * 10;
@@ -217,6 +227,9 @@
 
           this.ontimeupdate = this.ontimeupdate.bind(this);
           this.useSliders = this.useSliders.bind(this);
+
+          this.playing = false;
+          this.loop = false;
         }
 
         startCB(val) {
@@ -237,35 +250,30 @@
         }
 
         useSliders() {
-          if( ontimeupdate ) {
-            player.removeEventListener('timeupdate', ontimeupdate );
-          }
-          if (playing) { // stop when button pressed again
-            playing = false;
-            ontimeupdate = undefined;
+          if (this.playing) { // stop when button pressed again
+            this.playing = false;
             player.pause();
-            player.removeEventListener('timeupdate', ontimeupdate );
+            player.removeEventListener('timeupdate', this.ontimeupdate );
           }
           else {
             player.currentTime = this.startAt;
-            playing = true;
-            ontimeupdate = this.ontimeupdate;
-            player.addEventListener( 'timeupdate', ontimeupdate);
+            this.playing = true;
+            player.addEventListener( 'timeupdate', this.ontimeupdate);
             player.play();
           }
         }
 
         ontimeupdate() {
           if ( player.currentTime >= this.endAt ) {
-            if ( playing && loop ) {
+            if ( this.playing && this.loop ) {
               player.pause();
               player.currentTime = this.startAt;
               player.play();
             }
-            else if ( playing ) {
+            else if ( this.playing ) {
               player.pause();
-              player.removeEventListener('timeupdate', ontimeupdate );
-              playing = false;
+              player.removeEventListener('timeupdate', this.ontimeupdate );
+              this.playing = false;
             }
           }
         }
