@@ -68,14 +68,16 @@
 </head>
 <html>
   <body>
-    <!-- <div class="loading" id="loading" onclick="()=>{}">
-      Loading...
-    </div> -->
     <div class="content">
 
       <div class="heading">Humoresque</div>
       <p class="align-end"><a href="index.html">Home</a></p>
 
+      <p><a target="_blank" href="https://www.youtube.com/watch?v=EpMiNez6RR4">A version played by Josef Hassid</a></p>
+      <p><a target="_blank" href="https://www.youtube.com/watch?v=QptG5-jBgoI">A version played by Jascha Heifetz</a></p>
+      <p><a target="_blank" href="https://www.youtube.com/watch?v=mgHjk3l7SmQ">A version played by Kim Dami</a></p>
+      <p><a target="_blank" href="https://www.youtube.com/watch?v=2B9kZ2jguwk">A version played by Agustin Hadelich</a></p>
+      
       <p>Played by Lila Sklar for a lesson</p>
 
       <audio id="player" controls src="humoresque_Lila-Sklar.m4a"></audio>
@@ -109,10 +111,6 @@
           </span>
         </p>
       </div>
-
-      <!-- <p>
-        <button class="button-padding" onclick="stopVideo()">Stop</button>
-      </p> -->
 
       <div id="buttons" class="buttons"></div>
 
@@ -204,10 +202,12 @@
 
       // __SONG_FRAGMENTS_BUTTONS__
       createButton( 'Entire', 1.7, 216 );
-      createButton( 'A', 1.7, 27.9 );
-      createButton( '1.7-6.9', 1.7, 6.9 );
-      createButton( '6.9-15.8', 6.9, 15.8 );
-      createButton( '1.7-', 1.7, 15.9 );
+      createButton( 'A', 1.7, 27.6 );
+      createButton( 'B', 51.8, 80.3 );
+      createButton( 'C', 80.3, 105.4 );
+      createButton( 'D', 105.4, 155.9 );
+      createButton( 'E', 155.9, 179.7 );
+      createButton( 'F', 179.7, 210);
 
 
       class Slider extends DoubleSlider {
