@@ -2,7 +2,7 @@
 <head>
   <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no'>
   <link rel="icon" href="logo.png" type="image/png">
-  <title>Humoresque</title>
+  <title>Hunters Chorus</title>
   <style>
     .loading {
       position: absolute;
@@ -70,17 +70,12 @@
   <body>
     <div class="content">
 
-      <div class="heading">Humoresque</div>
+      <div class="heading">Hunters Chorus</div>
       <p class="align-end"><a href="index.html">Home</a></p>
-
-      <p><a target="_blank" href="https://www.youtube.com/watch?v=EpMiNez6RR4">A version played by Josef Hassid</a></p>
-      <p><a target="_blank" href="https://www.youtube.com/watch?v=QptG5-jBgoI">A version played by Jascha Heifetz</a></p>
-      <p><a target="_blank" href="https://www.youtube.com/watch?v=mgHjk3l7SmQ">A version played by Kim Dami</a></p>
-      <p><a target="_blank" href="https://www.youtube.com/watch?v=2B9kZ2jguwk">A version played by Agustin Hadelich</a></p>
       
       <p>Played by Lila Sklar for a lesson</p>
 
-      <audio id="player" controls src="humoresque_Lila-Sklar.m4a"></audio>
+      <audio id="player" controls src="hunters-chorus_Lila-Sklar.m4a"></audio>
 
       <div>
         <label for="loop">Loop</label>
@@ -119,7 +114,7 @@
       </div>
       <div id="slider" class="slider"></div>
 
-      <object type="application/pdf" data="humoresque_Dvorak.pdf" width="500" height="1400"></object>
+      <img class="score" src="hunters-chorus.jpg"/>
 
     </div>
 
@@ -201,21 +196,14 @@
       }
 
       // __SONG_FRAGMENTS_BUTTONS__
-      createButton( 'Entire', 1.7, 216 );
-      createButton( 'A', 1.7, 27.6 );
-      createButton( 'B', 51.8, 80.3 );
-      createButton( 'C', 80.3, 105.4 );
-      createButton( 'D', 105.4, 155.9 );
-      createButton( 'E', 155.9, 179.7 );
-      createButton( 'F', 179.7, 210);
+      createButton( 'Entire', 4.6, 2*60 + 4 );
       
-      createButton( 'curr', 1.6, 80.3 );
 
       class Slider extends DoubleSlider {
         constructor(...args) {
           super(...args);
           const songStarts = 0;
-          const songEnds = 3*60 + 36;
+          const songEnds = 2*60 + 4;
 
           // fractional seconds
           this.min = songStarts * 10;
