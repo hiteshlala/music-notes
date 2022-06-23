@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<head>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no'>
+  <link rel="icon" href="logo.png" type="image/png">
+  <title>Daily Practice Helper</title>
+  <style>
+    .loading {
+      position: absolute;
+      top: 50px;
+      left: 0px;
+      width: 100vw;
+      height: calc(100vh - 50px);
+      background-color: antiquewhite;
+      margin: auto;
+      line-height: calc(100vh - 50px);
+      text-align: center;
+    }
+    .hide {
+      display: none;
+    }
+    .heading {
+      height: 50px;
+      line-height: 50px;
+      font-size: 24px;
+      border-bottom: 1px solid black;
+      text-align: center;
+    }
+    .radio {
+      margin-right: 10px;
+      border: 1px solid black;
+      padding: 2px;
+      border-radius: 5px;
+    }
+    .buttons {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      flex-wrap: wrap;
+    }
+    .button-padding {
+      margin: 5px;
+      min-width: 60px;
+      height: 30px;
+    }
+    @media( max-width: 500px) {
+      .content {
+        margin: 0px;
+      }
+    }
+    @media ( min-width: 500px) {
+      .content {
+        max-width: 500px;
+        margin: 0px auto;
+      }
+    }
+    .align-end {
+      text-align: end;
+    }
+    .score {
+      margin-top: 15px;
+      max-width: 500px;
+      width: 100vw;
+    }
+  </style>
+</head>
+<html>
+  <body>
+    <div class="content">
+
+      <div class="heading">Daily Practice Helper</div>
+      <p class="align-end"><a href="index.html">Home</a></p>
+
+      <p>A tool to help me play a minimum amount of scales and songs each day</p>
+      <p>Track progress in localStore - maybe?</p>
+      <p>Eventually show some statistics on how well I am doing</p>
+      <p>Daily goals can be changed</p>
+      <p>Set of scales to be played</p>
+      <p>List of songs to be played</p>
+      <p>A practice playlist builder</p>
+
+      <audio id="player" controls src="daily-practice-g-minor_Lila-Sklar.m4a"></audio>
+
+      <div>
+        <label for="loop">Loop</label>
+        <input id="loop" type="checkbox" name="loop" onclick="setLoop()">
+      </div>
+
+      <div>
+        <p>
+          Speed:
+          <span class="radio">
+            <label for=".25">0.25</label>
+            <input type="radio" name="speed" id=".25" onclick="selectSpeed(0.25)">
+          </span>
+          
+          <span class="radio">
+            <label for=".5">0.5</label>
+            <input type="radio" name="speed" id=".5" onclick="selectSpeed(0.5)">
+          </span>
+          
+          <span class="radio">
+            <label for=".75">0.75</label>
+            <input type="radio" name="speed" id=".75" onclick="selectSpeed(0.75)">
+          </span>
+          
+          <span class="radio">
+            <label for="1">1</label>
+            <input type="radio" name="speed" id="1" onclick="selectSpeed(1)" checked>
+          </span>
+        </p>
+      </div>
+
+      <div id="buttons" class="buttons"></div>
+
+
+    </div>
+
+    <script>
+      const buttons = document.getElementById('buttons');
+      const player = document.getElementById('player');
+      let loop = false;
+      let playing = false;
+      let speed = 1;
+      let ontimeupdate;
+
+      player.addEventListener('loadeddata', onPlayerReady);
+      player.volume = 0.5;
+      
+
+      function setLoop() {
+        loop = !loop;
+        document.getElementById('loop').checked = loop;
+        console.log('loop', loop);
+      }
+
+      function selectSpeed(v) {
+        speed = v;
+        player.playbackRate = v;
+        console.log('speed', v);
+      }
+
+      function onPlayerReady(event) {
+        // document.getElementById('loading').classList.add('hide');
+      }
+
+      function stopVideo() {
+        player.pause();
+        playing = false;
+      }
+
+      function createButtonClickFunction( starting, ending ) {
+        const clickfuncion = () => {
+          if (playing) { // stop when button pressed again
+            playing = false;
+            player.pause();
+            ontimeupdate && player.removeEventListener('timeupdate', ontimeupdate );
+            ontimeupdate = undefined;
+          }
+          else {
+            player.currentTime = starting;
+            playing = true;
+            ontimeupdate = () => {
+              if ( player.currentTime >= ending ) {
+                if ( playing && loop ) {
+                  player.pause();
+                  player.currentTime = starting;
+                  player.play();
+                }
+                else if ( playing ) {
+                  playing = false;
+                  player.pause();
+                  player.removeEventListener('timeupdate', ontimeupdate );
+                }
+              }
+            };
+            player.addEventListener( 'timeupdate', ontimeupdate);
+            player.play();
+          }
+        };
+        return clickfuncion;
+      }
+
+      function createButton(text, start, stop) {
+        const b = document.createElement('button');
+        b.className = 'button-padding';
+        b.innerText = text;
+        b.onclick = createButtonClickFunction( start, stop );
+        buttons.appendChild(b);
+      }
+
+      // __SONG_FRAGMENTS_BUTTONS__
+      createButton( 'Entire', 0, 36 );
+      // createButton( 'A', 1.7, 27.6 );
+      // createButton( 'B', 51.8, 80.3 );
+      // createButton( 'C', 80.3, 105.4 );
+      // createButton( 'D', 105.4, 155.9 );
+      // createButton( 'E', 155.9, 179.7 );
+      // createButton( 'F', 179.7, 210);
+      
+
+    </script>
+  </body>
+</html>
