@@ -15,6 +15,9 @@ Html links and youtube repeater to help learn songs
 Some videos do not allow embedding.  Use [video -> mp3](https://youtubetomp3music.com/en26/) to convert to mp3.  
 Then use an `<audio/>` tag to embed in html.
 
+https://mp3-convert.org/
+
+
 ## Characters for Copy Pasting
 
 ♩	 ♪	 ♫ 	♬	 ♭  ♮ 	♯
