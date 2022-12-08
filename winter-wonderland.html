@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<head>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no'>
+  <link rel="icon" href="logo.png" type="image/png">
+  <title>Winter Wonderland</title>
+  <style>
+    .loading {
+      position: absolute;
+      top: 50px;
+      left: 0px;
+      width: 100vw;
+      height: calc(100vh - 50px);
+      background-color: antiquewhite;
+      margin: auto;
+      line-height: calc(100vh - 50px);
+      text-align: center;
+    }
+    .hide {
+      display: none;
+    }
+    .heading {
+      height: 50px;
+      line-height: 50px;
+      font-size: 24px;
+      border-bottom: 1px solid black;
+      text-align: center;
+    }
+    .radio {
+      margin-right: 10px;
+      border: 1px solid black;
+      padding: 2px;
+      border-radius: 5px;
+    }
+    .buttons {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      flex-wrap: wrap;
+    }
+    .button-padding {
+      margin: 5px;
+      min-width: 60px;
+      height: 30px;
+    }
+    @media( max-width: 500px) {
+      .content {
+        margin: 0px;
+      }
+    }
+    @media ( min-width: 500px) {
+      .content {
+        max-width: 500px;
+        margin: 0px auto;
+      }
+    }
+    .align-end {
+      text-align: end;
+    }
+    .score {
+      margin-top: 15px;
+      max-width: 500px;
+      width: 100vw;
+    }
+    .slider {
+      margin: 10px 0px;
+    }
+  </style>
+</head>
+<html>
+  <body>
+    <div class="content">
+
+      <div class="heading">Winter Wonderland</div>
+      <p class="align-end"><a href="index.html">Home</a></p>
+
+      <p>Recital group song in key of C major 3 violin parts</p>
+
+      <p>Violin 1</p>
+      <audio id="player-v1" controls src="winter-wonderland-v1.m4a"></audio>
+      <p>Violin 2</p>
+      <audio id="player-v2" controls src="winter-wonderland-v2.m4a"></audio>
+      <p>Violin 3</p>
+      <audio id="player-v3" controls src="winter-wonderland-v3.m4a"></audio>
+
+      <div>
+        <label for="loop">Loop</label>
+        <input id="loop" type="checkbox" name="loop" onclick="setLoop()">
+      </div>
+
+      <div>
+        <p>
+          Speed:
+          <span class="radio">
+            <label for=".25">0.25</label>
+            <input type="radio" name="speed" id=".25" onclick="selectSpeed(0.25)">
+          </span>
+          
+          <span class="radio">
+            <label for=".5">0.5</label>
+            <input type="radio" name="speed" id=".5" onclick="selectSpeed(0.5)">
+          </span>
+          
+          <span class="radio">
+            <label for=".75">0.75</label>
+            <input type="radio" name="speed" id=".75" onclick="selectSpeed(0.75)">
+          </span>
+          
+          <span class="radio">
+            <label for="1">1</label>
+            <input type="radio" name="speed" id="1" onclick="selectSpeed(1)" checked>
+          </span>
+        </p>
+      </div>
+
+      <!-- <object type="application/pdf" data="kolomeike-20-21-kammen-book-kosotchok.pdf" width="500" height="700"></object> -->
+      <img class="score" src=""/>
+      <img class="score" src=""/>
+      <img class="score" src=""/>
+
+    </div>
+
+    <script src="double-slider.js"></script>
+    <script>
+      const buttons = document.getElementById('buttons');
+      const player = document.getElementById('player-v1');
+      const player2 = document.getElementById('player-v2');
+      const player3 = document.getElementById('player-v3');
+      let loop = false;
+      let playing = false;
+      let speed = 1;
+      let ontimeupdate;
+
+      player.addEventListener('loadeddata', onPlayerReady);
+      player.volume = 0.5;
+      player2.addEventListener('loadeddata', onPlayerReady);
+      player2.volume = 0.5;
+      player3.addEventListener('loadeddata', onPlayerReady);
+      player3.volume = 0.5;
+      
+
+      function setLoop() {
+        loop = !loop;
+        document.getElementById('loop').checked = loop;
+        console.log('loop', loop);
+        if(slider) {
+          slider.loop = !slider.loop;
+        }
+      }
+
+      function selectSpeed(v) {
+        speed = v;
+        player.playbackRate = v;
+        console.log('speed', v);
+      }
+
+      function onPlayerReady(event) {
+        // document.getElementById('loading').classList.add('hide');
+      }
+
+      function stopVideo() {
+        player.pause();
+        playing = false;
+      }
+
+     
+      class Slider extends DoubleSlider {
+        constructor(...args) {
+          super(...args);
+          const songStarts = 0;
+          const songEnds = 1*60 + 46;
+
+          // fractional seconds
+          this.min = songStarts * 10;
+          this.max = songEnds * 10;
+          this.range = this.max - this.min;
+
+          // seconds, these are curr play values
+          this.startAt = songStarts;
+          this.endAt = songEnds;
+
+          this.ontimeupdate = this.ontimeupdate.bind(this);
+          this.useSliders = this.useSliders.bind(this);
+
+          this.playing = false;
+          this.loop = false;
+
+          this.player = args[1];
+        }
+
+        startCB(val) {
+          const currVal = Math.round((this.range/1000) * val + this.min);
+          this.startAt = currVal/10;
+        }
+
+        endCB(val) {
+          const currVal = Math.round((this.range/1000) * val + this.min);
+          this.endAt = currVal/10;
+        }
+
+        labelFormat(val) {
+          const currVal = Math.round((this.range/1000) * val + this.min);
+          const seconds = Math.floor(currVal / 10);
+          const decisec = currVal - seconds * 10;
+          return `${seconds}.${decisec}`;
+        }
+
+        useSliders() {
+          if (this.playing) { // stop when button pressed again
+            this.playing = false;
+            this.player.pause();
+            this.player.removeEventListener('timeupdate', this.ontimeupdate );
+          }
+          else {
+            this.player.currentTime = this.startAt;
+            this.playing = true;
+            this.player.addEventListener( 'timeupdate', this.ontimeupdate);
+            this.player.play();
+          }
+        }
+
+        ontimeupdate() {
+          if ( this.player.currentTime >= this.endAt ) {
+            if ( this.playing && this.loop ) {
+              this.player.pause();
+              this.player.currentTime = this.startAt;
+              this.player.play();
+            }
+            else if ( this.playing ) {
+              this.player.pause();
+              this.player.removeEventListener('timeupdate', this.ontimeupdate );
+              this.playing = false;
+            }
+          }
+        }
+      }
+    </script>
+  </body>
+</html>
