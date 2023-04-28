@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<head>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no'>
+  <link rel="icon" href="logo.png" type="image/png">
+  <title>Gavotte - Becker</title>
+  <style>
+    .loading {
+      position: absolute;
+      top: 50px;
+      left: 0px;
+      width: 100vw;
+      height: calc(100vh - 50px);
+      background-color: antiquewhite;
+      margin: auto;
+      line-height: calc(100vh - 50px);
+      text-align: center;
+    }
+    .hide {
+      display: none;
+    }
+    .heading {
+      height: 50px;
+      line-height: 50px;
+      font-size: 24px;
+      border-bottom: 1px solid black;
+      text-align: center;
+    }
+    .radio {
+      margin-right: 10px;
+      border: 1px solid black;
+      padding: 2px;
+      border-radius: 5px;
+    }
+    .buttons {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      flex-wrap: wrap;
+    }
+    .button-padding {
+      margin: 5px;
+      min-width: 60px;
+      height: 30px;
+    }
+    @media( max-width: 500px) {
+      .content {
+        margin: 0px;
+      }
+    }
+    @media ( min-width: 500px) {
+      .content {
+        max-width: 500px;
+        margin: 0px auto;
+      }
+    }
+    .align-end {
+      text-align: end;
+    }
+    .score {
+      margin-top: 15px;
+      max-width: 500px;
+      width: 100vw;
+    }
+    .slider {
+      margin: 10px 0px;
+    }
+  </style>
+</head>
+<html>
+  <body>
+    <div class="content">
+
+      <div class="heading">Gavotte - Becker</div>
+      <p class="align-end"><a href="index.html">Home</a></p>
+
+      <p>Played by Lila Sklar for a lesson</p>
+
+      <audio id="player" controls src="gavotte-becker_Lila-Sklar.m4a"></audio>
+
+      <div>
+        <label for="loop">Loop</label>
+        <input id="loop" type="checkbox" name="loop" onclick="setLoop()">
+      </div>
+
+      <div>
+        <p>
+          Speed:
+          <span class="radio">
+            <label for=".25">0.25</label>
+            <input type="radio" name="speed" id=".25" onclick="selectSpeed(0.25)">
+          </span>
+          
+          <span class="radio">
+            <label for=".5">0.5</label>
+            <input type="radio" name="speed" id=".5" onclick="selectSpeed(0.5)">
+          </span>
+          
+          <span class="radio">
+            <label for=".75">0.75</label>
+            <input type="radio" name="speed" id=".75" onclick="selectSpeed(0.75)">
+          </span>
+          
+          <span class="radio">
+            <label for="1">1</label>
+            <input type="radio" name="speed" id="1" onclick="selectSpeed(1)" checked>
+          </span>
+        </p>
+      </div>
+
+      <div id="buttons" class="buttons"></div>
+
+      <div>
+        <button class="button-padding" onclick="slider.useSliders()">Use Sliders</button>
+      </div>
+      <div id="slider" class="slider"></div>
+
+      <img class="score" src="gavotte-becker-1.jpg"/>
+      <img class="score" src="gavotte-becker-2.jpg"/>
+    </div>
+
+    <script src="double-slider.js"></script>
+    <script>
+      const buttons = document.getElementById('buttons');
+      const player = document.getElementById('player');
+      let loop = false;
+      let playing = false;
+      let speed = 1;
+      let ontimeupdate;
+
+      player.addEventListener('loadeddata', onPlayerReady);
+      player.volume = 0.5;
+      
+
+      function setLoop() {
+        loop = !loop;
+        document.getElementById('loop').checked = loop;
+        console.log('loop', loop);
+        if(slider) {
+          slider.loop = !slider.loop;
+        }
+      }
+
+      function selectSpeed(v) {
+        speed = v;
+        player.playbackRate = v;
+        console.log('speed', v);
+      }
+
+      function onPlayerReady(event) {
+        // document.getElementById('loading').classList.add('hide');
+      }
+
+      function stopVideo() {
+        player.pause();
+        playing = false;
+      }
+
+      function createButtonClickFunction( starting, ending ) {
+        const clickfuncion = () => {
+          if (playing) { // stop when button pressed again
+            playing = false;
+            player.pause();
+            ontimeupdate && player.removeEventListener('timeupdate', ontimeupdate );
+            ontimeupdate = undefined;
+          }
+          else {
+            player.currentTime = starting;
+            playing = true;
+            ontimeupdate = () => {
+              if ( player.currentTime >= ending ) {
+                if ( playing && loop ) {
+                  player.pause();
+                  player.currentTime = starting;
+                  player.play();
+                }
+                else if ( playing ) {
+                  playing = false;
+                  player.pause();
+                  player.removeEventListener('timeupdate', ontimeupdate );
+                }
+              }
+            };
+            player.addEventListener( 'timeupdate', ontimeupdate);
+            player.play();
+          }
+        };
+        return clickfuncion;
+      }
+
+      function createButton(text, start, stop) {
+        const b = document.createElement('button');
+        b.className = 'button-padding';
+        b.innerText = text;
+        b.onclick = createButtonClickFunction( start, stop );
+        buttons.appendChild(b);
+      }
+
+      // __SONG_FRAGMENTS_BUTTONS__
+      createButton( 'Entire', 0, 3*60 + 3 );
+      // createButton( 'A-1', 13, 19 );
+      // createButton( 'A 2.6-27.4', 2.6, 27.4 );
+      // createButton( 'B 27-51.7', 27, 51.7 );
+      // createButton( 'C 52.2-75.2', 52.2, 75.2);
+      // createButton( 'D 75.4-97.1', 75.4, 97.1 );
+      // createButton( 'F', 179.7, 210);
+      
+      class Slider extends DoubleSlider {
+        constructor(...args) {
+          super(...args);
+          const songStarts = 0;
+          const songEnds = 3*60 + 3;
+
+          // fractional seconds
+          this.min = songStarts * 10;
+          this.max = songEnds * 10;
+          this.range = this.max - this.min;
+
+          // seconds, these are curr play values
+          this.startAt = songStarts;
+          this.endAt = songEnds;
+
+          this.ontimeupdate = this.ontimeupdate.bind(this);
+          this.useSliders = this.useSliders.bind(this);
+
+          this.playing = false;
+          this.loop = false;
+        }
+
+        startCB(val) {
+          const currVal = Math.round((this.range/1000) * val + this.min);
+          this.startAt = currVal/10;
+        }
+
+        endCB(val) {
+          const currVal = Math.round((this.range/1000) * val + this.min);
+          this.endAt = currVal/10;
+        }
+
+        labelFormat(val) {
+          const currVal = Math.round((this.range/1000) * val + this.min);
+          const seconds = Math.floor(currVal / 10);
+          const decisec = currVal - seconds * 10;
+          return `${seconds}.${decisec}`;
+        }
+
+        useSliders() {
+          if (this.playing) { // stop when button pressed again
+            this.playing = false;
+            player.pause();
+            player.removeEventListener('timeupdate', this.ontimeupdate );
+          }
+          else {
+            player.currentTime = this.startAt;
+            this.playing = true;
+            player.addEventListener( 'timeupdate', this.ontimeupdate);
+            player.play();
+          }
+        }
+
+        ontimeupdate() {
+          if ( player.currentTime >= this.endAt ) {
+            if ( this.playing && this.loop ) {
+              player.pause();
+              player.currentTime = this.startAt;
+              player.play();
+            }
+            else if ( this.playing ) {
+              player.pause();
+              player.removeEventListener('timeupdate', this.ontimeupdate );
+              this.playing = false;
+            }
+          }
+        }
+      }
+
+      const slider = new Slider('slider');
+      slider.init();
+
+    </script>
+  </body>
+</html>
