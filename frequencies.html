@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no'>
+    <title>Frequencies</title>
+    <link rel="icon" href="logo.png" type="image/png">
+    <style id="style">
+      .heading {
+        height: 50px;
+        line-height: 50px;
+        font-size: 24px;
+        border-bottom: 1px solid black;
+        text-align: center;
+      }
+      .radio {
+        margin-right: 10px;
+        border: 1px solid black;
+        padding: 2px;
+        border-radius: 5px;
+      }
+      .buttons {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+      }
+      .button-padding {
+        margin: 0 5px;
+      }
+      @media( max-width: 500px) {
+        .content {
+          margin: 0px;
+        }
+      }
+      @media ( min-width: 500px) {
+        .content {
+          max-width: 500px;
+          margin: 0px auto;
+        }
+      }
+      .align-end {
+        text-align: end;
+      }
+      canvas {
+        width: 100%;
+        border: 1px solid black;
+      }
+      .drawn {
+        background-color: #FF5252;
+      }
+      table {
+        border-collapse: collapse;
+        margin: 5px auto;
+      }
+      td {
+        border: 1px solid black;
+        width: 90px;
+        height: 25px;
+        text-align: center;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="content">
+      <div class="heading">Frequencies</div>
+      <p class="align-end"><a href="index.html">Home</a></p>
+      <div>
+        <canvas id="can" width="1000" height="600"></canvas>
+      </div>
+      <div>
+        <table>
+          <tbody  id="table"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <script>
+      const velSound = 343;
+      const cWaveLen = velSound/130.81;
+      const maxOneWave = 250;
+      const canLen = 1000;
+      const can = document.getElementById('can');
+      const ctx = can.getContext('2d');
+      const table = document.getElementById('table');
+      const style = document.getElementById('style');
+      const paths2d = [{
+        draw: true,
+        col: 'black',
+        path: (() => {
+          const p2d = new Path2D();
+          p2d.moveTo(0, 300);
+          p2d.lineTo(1000, 300);
+          return p2d;
+        })(),
+      }];
+
+      function draw() {
+        ctx.clearRect(0, 0, 1000, 600);
+        for(let obj of paths2d) {
+          if (obj.draw) {
+            ctx.strokeStyle = obj.col;
+            ctx.stroke(obj.path);
+          }
+        }
+      }
+
+      draw();
+
+      function colToName(col) {
+        return `${col.replace('#','color-')}`;
+      }
+
+      function drawFrequency(cell, value, col, pobj) {
+        cell.classList.toggle(colToName(col));
+        pobj.draw = !pobj.draw;
+        draw();
+      }
+
+      /*
+        velocity of sound = 343m/s
+        500 units == 1 wavelength of C 130.81 hz
+
+        freq = waves/second
+        wavelength = velocity / frequency
+
+        Cwl = 343/130.81;
+
+        maxOneWave = 500
+        Cwl: maxOneWave
+        ?wl: x
+
+        x = 500 * ?wl / Cwl
+
+        x:2pi
+        i:?
+      */
+
+      const values = [
+        ['<span>C</span>', 130.81, 261.63, '#D50000', '#FF5252'],
+        ['<span>C<sup>♯</sup>/D<sup>♭</sup></span>', 138.59, 277.18, '#C51162', '#FF4081'],
+        ['<span>D</span>', 146.83, 293.66, '#AA00FF', '#E040FB'],
+        ['<span>D<sup>♯</sup>/E<sup>♭</sup></span>', 155.56, 311.13, '#6200EA', '#7C4DFF'],
+        ['<span>E</span>', 164.81, 329.63, '#304FFE', '#536DFE'],
+        ['<span>F</span>', 174.61, 349.23, '#2962FF', '#448AFF'],
+        ['<span>F<sup>♯</sup>/G<sup>♭</sup></span>', 185.00, 369.99, '#00BFA5', '#64FFDA'],
+        ['<span>G</span>', 196.00, 392.00, '#AEEA00', '#EEFF41'],
+        ['<span>G<sup>♯</sup>/A<sup>♭</sup></span>', 207.65, 415.30, '#00B8D4', '#18FFFF'],
+        ['<span>A</span>', 220.00, 440.00, '#64DD17', '#B2FF59'],
+        ['<span>A<sup>♯</sup>/B<sup>♭</sup></span>', 233.08, 466.16, '#FFD600', '#FFFF00'],
+        ['<span>B</span>', 246.94, 493.88, '#FF6D00', '#FFAB40'],
+      ];
+      for(let r of values) {
+        const tr = document.createElement('tr');
+        const note = document.createElement('td');
+        note.innerHTML = r[0];
+
+        const freq1 = document.createElement('td');
+        const pobj1 = { draw: false, path: new Path2D(), col: r[3] };
+        freq1.innerText = r[1];
+        freq1.onclick = () => drawFrequency(freq1, r[1], r[3], pobj1);
+        pobj1.path.moveTo(0, 300);
+        const x1 = maxOneWave * (velSound/r[1]) / cWaveLen;
+
+        const freq2 = document.createElement('td');
+        const pobj2 = { draw: false, path: new Path2D(), col: r[4] };
+        freq2.innerText = r[2];
+        freq2.onclick = () => drawFrequency(freq2, r[2], r[4], pobj2);
+        pobj2.path.moveTo(0, 300);
+        const x2 = maxOneWave * (velSound/r[2]) / cWaveLen;
+
+        paths2d.push(pobj1);
+        paths2d.push(pobj2);
+
+        for(let i = 0; i < canLen; i++) {
+          const angle1 = i * 2 * Math.PI / x1;
+          const h1 = Math.round(-Math.sin(angle1) * 300) + 300;
+          pobj1.path.lineTo(i, h1);
+          const angle2 = i * 2 * Math.PI / x2;
+          const h2 = Math.round(-Math.sin(angle2) * 300) + 300;
+          pobj2.path.lineTo(i, h2);
+        }
+
+        tr.appendChild(note)
+        tr.appendChild(freq1)
+        tr.appendChild(freq2)
+
+        table.appendChild(tr);
+
+        const cols = document.createTextNode(`.${colToName(r[3])} { background-color: ${r[3]}; } .${colToName(r[4])} { background-color: ${r[4]}; }`)
+        style.appendChild(cols);
+      }
+    </script>
+
+  </body>
+
+</html>
+
+
