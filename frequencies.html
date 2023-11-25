@@ -59,6 +59,9 @@
         height: 25px;
         text-align: center;
       }
+      .clickable {
+        cursor: pointer;
+      }
     </style>
   </head>
 
@@ -79,13 +82,14 @@
     <script>
       const velSound = 343;
       const cWaveLen = velSound/130.81;
-      const maxOneWave = 250;
+      const maxOneWave = 500;
       const canLen = 1000;
       const can = document.getElementById('can');
       const ctx = can.getContext('2d');
       const table = document.getElementById('table');
       const style = document.getElementById('style');
       const paths2d = [{
+        lineWidth: 1,
         draw: true,
         col: 'black',
         path: (() => {
@@ -100,6 +104,7 @@
         ctx.clearRect(0, 0, 1000, 600);
         for(let obj of paths2d) {
           if (obj.draw) {
+            ctx.lineWidth = obj.lineWidth || 5;
             ctx.strokeStyle = obj.col;
             ctx.stroke(obj.path);
           }
@@ -157,6 +162,7 @@
         note.innerHTML = r[0];
 
         const freq1 = document.createElement('td');
+        freq1.classList.add('clickable');
         const pobj1 = { draw: false, path: new Path2D(), col: r[3] };
         freq1.innerText = r[1];
         freq1.onclick = () => drawFrequency(freq1, r[1], r[3], pobj1);
@@ -164,6 +170,7 @@
         const x1 = maxOneWave * (velSound/r[1]) / cWaveLen;
 
         const freq2 = document.createElement('td');
+        freq2.classList.add('clickable');
         const pobj2 = { draw: false, path: new Path2D(), col: r[4] };
         freq2.innerText = r[2];
         freq2.onclick = () => drawFrequency(freq2, r[2], r[4], pobj2);
