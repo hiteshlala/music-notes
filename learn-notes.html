@@ -28,8 +28,9 @@
         text-align: end;
       }
       #vex {
-        height: 150px;
+        height: 340px;
         text-align: center;
+        border: 1px solid green;
       }
       #card-name {
         text-align: center;
@@ -43,6 +44,11 @@
       .stop {
         background-color: red;
       }
+      svg {
+        transform: scale(2) translateY(50px);
+        /* border: 1px solid black; */
+        
+      }
     </style>
   </head>
   <body>
@@ -50,8 +56,8 @@
       <div class="heading">Learn The Notes</div>
       <p class="align-end"><a href="index.html">Home</a></p>
       <div>
-        <p>Cleffs:</p>
         <p>
+          <span>Cleffs:</span>
           <span><input type="checkbox" id="show-treble" oninput="selectGroup()"> Treble</span>
           <span><input type="checkbox" id="show-alto" oninput="selectGroup()"> Alto</span>
           <span><input type="checkbox" id="show-bass" oninput="selectGroup()"> Bass</span>
@@ -87,6 +93,7 @@
       const pause = document.getElementById('pause');
       const desc = document.getElementById('card-name');
       const vex = document.getElementById('vex');
+      const timeInput = document.getElementById('display-time');
       const trebleClefs = [
         'G3', 'G#3', 'Ab3', 'A3', 'A#3', 'Bb3', 'B3', 'B#3', 'Cb4', 'C4', 'C#4',
         'D4', 'D#4', 'Eb4', 'E4', 'E#4', 'Fb4', 'F4', 'F#4', 'Gb4', 'G4', 'G#4',
@@ -121,15 +128,31 @@
         (params.get('treble') === 'true') && (showTreble.checked = true);
         (params.get('alto') === 'true') && (showAlto.checked = true);
         (params.get('shuffle') === 'true') && (IShouldShuffle.checked = true);
+        if (params.get('time')) {
+          displayTime = parseInt(params.get('time'));
+          timeInput.value = params.get('time');
+        }
+        (params.get('flats') === 'true') && (includeFlats.checked = true);
+        (params.get('sharps') === 'true') && (includeSharps.checked = true);
       };
 
       function selectGroup() {
         // still thinking about this one...
-        // window.location.search = `bass=${showBass.checked}&treble=${showTreble.checked}&alto=${showAlto.checked}&shuffle=${IShouldShuffle.checked}`;
+        const search = [
+          `bass=${showBass.checked}`,
+          `treble=${showTreble.checked}`,
+          `alto=${showAlto.checked}`,
+          `shuffle=${IShouldShuffle.checked}`,
+          `time=${displayTime}`,
+          `flats=${includeFlats.checked}`,
+          `sharps=${includeSharps.checked}`,
+        ];
+        window.location.search = search.join('&');
       }
 
       function setTime(el) {
         displayTime = parseInt(el.value);
+        selectGroup();
       }
 
       function shuffle(deck) {
@@ -175,7 +198,7 @@
         const [clef, note] = card.split('-');
         drawANote(note, clef);
         setTimeout(() => {
-          desc.innerText = card;
+          desc.innerText = note.replace('#', '♯').replace('b', '♭').replace(/[1-9]/, '');
         }, displayTime);
         setTimeout(() => {
           desc.innerText = '';
@@ -212,8 +235,8 @@
         const vf = new Factory({
           renderer: {
             elementId: 'vex',
-            width: 150,
-            height: 200
+            width: 160,
+            height: 140,
           },
         });
         const score = vf.EasyScore();
