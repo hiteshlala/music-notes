@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no'>
+    <link rel="icon" href="logo.png" type="image/png">
+    <title>Learn The Notes</title>
+    <style>
+      .heading {
+        height: 50px;
+        line-height: 50px;
+        font-size: 24px;
+        border-bottom: 1px solid black;
+        text-align: center;
+      }
+      @media( max-width: 500px) {
+        .content {
+          margin: 0px;
+        }
+      }
+      @media ( min-width: 500px) {
+        .content {
+          max-width: 500px;
+          margin: 0px auto;
+        }
+      }
+      .align-end {
+        text-align: end;
+      }
+      #vex {
+        height: 150px;
+        text-align: center;
+      }
+      #card-name {
+        text-align: center;
+        margin: 30px;
+        line-height: 40px;
+        font-size: 36px;
+      }
+      .paused {
+        background-color: green;
+      }
+      .stop {
+        background-color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="content">
+      <div class="heading">Learn The Notes</div>
+      <p class="align-end"><a href="index.html">Home</a></p>
+      <div>
+        <p>Cleffs:</p>
+        <p>
+          <span><input type="checkbox" id="show-treble" oninput="selectGroup()"> Treble</span>
+          <span><input type="checkbox" id="show-alto" oninput="selectGroup()"> Alto</span>
+          <span><input type="checkbox" id="show-bass" oninput="selectGroup()"> Bass</span>
+        </p>
+        <p>
+          <span><input type="checkbox" id="should-shuffle" oninput="selectGroup()"> Shuffle</span>
+          <span><input type="checkbox" id="include-sharps" oninput="selectGroup()"> Include Sharps</span>
+          <span><input type="checkbox" id="include-flats" oninput="selectGroup()"> Include Flats</span>
+        </p>
+        <p>
+          <span><input type="number" id="display-time" oninput="setTime(this)" value="1500"> Speed in ms</span>
+        </p>
+        <p>
+          <button id="start-stop" onclick="startOrStop()">Start</button> 
+          <button id="pause" onclick="puaseUnpause()">Pause</button>
+        </p>
+      </div>
+      <div>
+        <div id="vex"></div>
+        <div id="card-name"></div>
+      </div>
+    </div>
+    <script src="learn-notes-vexflow.js"></script>
+    <script>
+      const { Factory, EasyScore, System } = Vex.Flow;
+      const showTreble = document.getElementById('show-treble');
+      const showBass = document.getElementById('show-bass');
+      const showAlto = document.getElementById('show-alto');
+      const startStop = document.getElementById('start-stop');
+      const IShouldShuffle = document.getElementById('should-shuffle');
+      const includeSharps = document.getElementById('include-sharps');
+      const includeFlats = document.getElementById('include-flats');
+      const pause = document.getElementById('pause');
+      const desc = document.getElementById('card-name');
+      const vex = document.getElementById('vex');
+      const trebleClefs = [
+        'G3', 'G#3', 'Ab3', 'A3', 'A#3', 'Bb3', 'B3', 'B#3', 'Cb4', 'C4', 'C#4',
+        'D4', 'D#4', 'Eb4', 'E4', 'E#4', 'Fb4', 'F4', 'F#4', 'Gb4', 'G4', 'G#4',
+        'A4', 'A#4', 'Bb4', 'B4', 'B#4', 'Cb5', 'C5', 'C#5', 'Db5', 'D5', 'D#5',
+        'E5', 'E#5', 'Fb5', 'F5', 'F#5', 'Gb5', 'G5', 'G#5', 'Ab5', 'A5', 'A#5',
+        'Bb5', 'B5', 'B#5', 'Cb6', 'C6', 'C#6', 'Db6', 'D6', 'D#6', 'Eb6', 'E6', 'E#6',
+      ].map(n => `treble-${n}`);
+      const altoClefs = [
+        'C3', 'C#3', 'Db3', 'D3', 'D#3', 'Eb3', 'E3', 'E#3', 'Fb3', 'F3', 'F#3',
+        'G3', 'G#3', 'Ab3', 'A3', 'A#3', 'Bb3', 'B3', 'B#3', 'Cb4', 'C4', 'C#4',
+        'D4', 'D#4', 'Eb4', 'E4', 'E#4', 'Fb4', 'F4', 'F#4', 'Gb4', 'G4', 'G#4',
+        'A4', 'A#4', 'Bb4', 'B4', 'B#4', 'Cb5', 'C5', 'C#5', 'Db5', 'D5', 'D#5',
+        'Eb5', 'E5', 'E#5', 'Fb5', 'F5', 'F#5', 'Gb5', 'G5', 'G#5', 'Ab5', 'A5', 'A#5',
+      ].map(n => `alto-${n}`);
+      const bassClefs = [
+        'C2', 'C#2', 'Db2', 'D2', 'D#2', 'Eb2', 'E2', 'E#2', 'Fb2', 'F2', 'F#2',
+        'G2', 'G#2', 'Ab2', 'A2', 'A#2', 'Bb2', 'B2', 'B#2', 'Cb3', 'C3', 'C#3',
+        'D3', 'D#3', 'Eb3', 'E3', 'E#3', 'Fb3', 'F3', 'F#3', 'Gb3', 'G3', 'G#3',
+        'A3', 'A#3', 'Bb3', 'B3', 'B#3', 'Cb4', 'C4', 'C#4', 'Db4', 'D4', 'D#4',
+        'Eb4', 'E4', 'E#4', 'Fb4', 'F4', 'F#4', 'Gb4', 'G4', 'G#4', 'Ab4', 'A4', 'A#4',
+      ].map(n => `bass-${n}`);
+      let playing = false;
+      let paused = false;
+      let shouldShuffle = true;
+      let currentDeck = [];
+      let currentIndex = 0;
+      let displayTime = 1500;
+
+      window.onload = () => {
+        const params = new URLSearchParams(window.location.search);
+        (params.get('bass') === 'true') && (showBass.checked = true);
+        (params.get('treble') === 'true') && (showTreble.checked = true);
+        (params.get('alto') === 'true') && (showAlto.checked = true);
+        (params.get('shuffle') === 'true') && (IShouldShuffle.checked = true);
+      };
+
+      function selectGroup() {
+        // still thinking about this one...
+        // window.location.search = `bass=${showBass.checked}&treble=${showTreble.checked}&alto=${showAlto.checked}&shuffle=${IShouldShuffle.checked}`;
+      }
+
+      function setTime(el) {
+        displayTime = parseInt(el.value);
+      }
+
+      function shuffle(deck) {
+        let shuffle = deck.slice();
+        for (let i = shuffle.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffle[i], shuffle[j]] = [shuffle[j], shuffle[i]];
+        }
+        return shuffle;
+      }
+
+      function startOrStop() {
+        startStop.classList.toggle('stop');
+        if (playing) {
+          playing = false;
+          startStop.innerText = 'Start';
+          currentDeck = [];
+          currentIndex = 0;
+        } else {
+          playing = true;
+          startStop.innerText = 'Stop';
+          showBass.checked && (currentDeck = currentDeck.concat(bassClefs));
+          showAlto.checked && (currentDeck = currentDeck.concat(altoClefs));
+          showTreble.checked && (currentDeck = currentDeck.concat(trebleClefs));
+
+          !includeFlats.checked && (currentDeck = currentDeck.filter(n => {
+            return (n[ n.length -2 ] === 'b') ? false : true;
+          }));
+          !includeSharps.checked && (currentDeck = currentDeck.filter(n => {
+            return /#/.test(n) ? false : true;
+          }));
+
+          IShouldShuffle.checked && (currentDeck = shuffle(currentDeck));
+          showCards();
+        }
+      }
+
+      function showCards() {
+        if (currentIndex >= currentDeck.length) {
+          return;
+        }
+        const card = currentDeck[currentIndex];
+        const [clef, note] = card.split('-');
+        drawANote(note, clef);
+        setTimeout(() => {
+          desc.innerText = card;
+        }, displayTime);
+        setTimeout(() => {
+          desc.innerText = '';
+          currentIndex++;
+          if (currentIndex < currentDeck.length) {
+            !paused && showCards();
+          } else {
+            startStop.classList.remove('stop');
+            playing = false;
+            startStop.innerText = 'Start';
+            currentDeck = [];
+            currentIndex = 0;
+            paused = false;
+            pause.innerText = 'Pause';
+            pause.classList.remove('paused');
+          }
+        }, displayTime + displayTime);
+      }
+
+      function puaseUnpause() {
+        pause.classList.toggle('paused');
+        if (paused && currentIndex < currentDeck.length) {
+          pause.innerText = 'Pause';
+          showCards();
+          paused = false;
+        } else {
+          pause.innerText = 'Un-pause';
+          paused = true;
+        }
+      }
+      
+      function drawANote(note, clef) {
+        vex.innerHTML = '';
+        const vf = new Factory({
+          renderer: {
+            elementId: 'vex',
+            width: 150,
+            height: 200
+          },
+        });
+        const score = vf.EasyScore();
+        const system = vf.System();
+        
+        system
+          .addStave({
+            voices: [
+              score.voice(score.notes(`${note}/w`, { clef })),
+              // score.voice(score.notes('C2/8, G2, D3, A3, D4/q, A4', { clef: 'bass' })),
+              // score.voice(score.notes('C3/8, G3, D4, A4, D5/q, A5', { clef: 'alto' })),
+              // score.voice(score.notes('G3/8, D4, A4, E5, A5/q, E6', { clef: 'treble' })),
+            ],
+          })
+          .addClef(clef)
+        vf.draw();
+      }
+    </script>
+    
+  </body>
+</html>
