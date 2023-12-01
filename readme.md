@@ -21,6 +21,8 @@ https://mp3-convert.org/
 ## Characters for Copy Pasting
 
 ♩	 ♪	 ♫ 	♬	 ♭  ♮ 	♯
+𝄞  𝄡  𝄢 
+
 
 
 
