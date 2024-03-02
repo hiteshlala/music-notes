@@ -73,6 +73,10 @@
           <span><input type="number" id="display-time" oninput="setTime(this)" value="1500"> Speed in ms</span>
         </p>
         <p>
+          <span><input type="checkbox" id="play-tone" oninput="selectGroup()"> Play Tone</span>
+        </p>
+
+        <p>
           <button id="start-stop" onclick="startOrStop()">Start</button> 
           <button id="pause" onclick="puaseUnpause()">Pause</button>
         </p>
@@ -95,6 +99,7 @@
       const IShouldShuffle = document.getElementById('should-shuffle');
       const includeSharps = document.getElementById('include-sharps');
       const includeFlats = document.getElementById('include-flats');
+      const playTone = document.getElementById('play-tone');
       const pause = document.getElementById('pause');
       const desc = document.getElementById('card-name');
       const vex = document.getElementById('vex');
@@ -120,6 +125,33 @@
         'A3', 'A#3', 'Bb3', 'B3', 'B#3', 'Cb4', 'C4', 'C#4', 'Db4', 'D4', 'D#4',
         'Eb4', 'E4', 'E#4', 'Fb4', 'F4', 'F#4', 'Gb4', 'G4', 'G#4', 'Ab4', 'A4', 'A#4',
       ].map(n => `bass-${n}`);
+
+      // https://mixbutton.com/mixing-articles/music-note-to-frequency-chart/
+      const frequencies= {
+        'C2': 65.41, 'C#2': 69.3, 'Db2': 69.3, 'D2': 73.42, 'D#2': 77.78, 'Eb2': 77.78,
+        'E2': 82.41, 'E#2': 87.31, 'Fb2': 82.41, 'F2': 87.31, 'F#2': 92.5, 'G2': 98,
+        'G#2': 103.83, 'Ab2': 103.83, 'A2': 110, 'A#2': 116.54, 'Bb2': 116.54, 'B2': 123.47,
+        'B#2': 130.81,
+
+        'Cb3': 123.47, 'C3': 130.81, 'C#3': 138.59, 'Db3': 138.59, 'D3': 146.83, 'D#3': 155.56,
+        'Eb3': 155.56, 'E3': 164.81, 'E#3': 174.61, 'Fb3': 164.81, 'F3': 174.61, 'F#3': 185,
+        'G3': 196, 'G#3': 207.65, 'Gb3': 185, 'Ab3': 207.65, 'A3': 220, 'A#3': 233.08,
+        'Bb3': 233.08, 'B3': 246.94, 'B#3': 261.63,
+        
+        'Cb4': 246.94, 'C4': 261.63, 'C#4': 277.18, 'Db4': 277.18, 'D4': 293.66, 'D#4': 311.13,
+        'Eb4': 311.13, 'E4': 329.63, 'E#4': 349.23, 'Fb4': 329.63, 'F4': 349.23, 'F#4': 369.99,
+        'Gb4': 369.99, 'G4': 392, 'G#4': 415.3, 'Ab4': 415.3, 'A4': 440, 'A#4': 466.16,
+        'Bb4': 466.16, 'B4': 493.88, 'B#4': 523.25,
+
+        'Cb5': 493.88, 'C5': 523.25, 'C#5': 554.37, 'Db5': 554.37, 'D5': 587.33, 'D#5': 622.25,
+        'Eb5': 622.25, 'E5': 659.25, 'E#5': 698.46, 'Fb5': 659.25, 'F5': 698.46, 'F#5': 739.99,
+        'Gb5': 739.99, 'G5': 783.99, 'G#5': 830.61, 'Ab5': 830.61, 'A5': 880, 'A#5': 932.33,
+        'Bb5': 932.33, 'B5': 987.77, 'B#5': 1046.5, 
+        
+        'Cb6': 987.77, 'C6': 1046.5, 'C#6': 1108.73, 'Db6': 1108.73, 'D6': 1174.66, 'D#6': 1244.51,
+        'Eb6': 1244.51, 'E6': 1318.51, 'E#6': 1396.91,
+      };
+
       let playing = false;
       let paused = false;
       let shouldShuffle = true;
@@ -139,6 +171,7 @@
         }
         (params.get('flats') === 'true') && (includeFlats.checked = true);
         (params.get('sharps') === 'true') && (includeSharps.checked = true);
+        ((params.get('tone') === 'true') && (playTone.checked = true));
       };
 
       function selectGroup() {
@@ -151,6 +184,7 @@
           `time=${displayTime}`,
           `flats=${includeFlats.checked}`,
           `sharps=${includeSharps.checked}`,
+          `tone=${playTone.checked}`,
         ];
         window.location.search = search.join('&');
       }
@@ -202,6 +236,11 @@
         const card = currentDeck[currentIndex];
         const [clef, note] = card.split('-');
         drawANote(note, clef);
+        if (playTone.checked) {
+          const howLong = 2 * displayTime * 0.9 / 1000; // seconds
+          const freq = frequencies[note];
+          playNote(freq, howLong);
+        }
         setTimeout(() => {
           desc.innerText = note.replace('#', '♯').replace('b', '♭').replace(/[1-9]/, '');
         }, displayTime);
@@ -259,6 +298,22 @@
           .addClef(clef)
         vf.draw();
       }
+
+
+      // https://developer.mozilla.org/en-US/docs/Web/API/OscillatorNode
+      // https://stackoverflow.com/questions/39200994/how-to-play-a-specific-frequency-with-javascript
+
+      function playNote(frequency, duration, callback) {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioCtx.createOscillator();
+        oscillator.type = 'sine';
+        oscillator.frequency.value = frequency; // value in hertz
+        oscillator.connect(audioCtx.destination);
+        callback && (oscillator.onended = callback);
+        oscillator.start(0);
+        oscillator.stop(audioCtx.currentTime + duration); // seconds
+      }
+
     </script>
     
   </body>
