@@ -1,94 +1,84 @@
 <!DOCTYPE html>
-<head>
-  <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no'>
-  <link rel="icon" href="logo.png" type="image/png">
-  <title>Reflection of the moon on Er Quan</title>
-  <style>
-    .loading {
-      position: absolute;
-      top: 50px;
-      left: 0px;
-      width: 100vw;
-      height: calc(100vh - 50px);
-      background-color: antiquewhite;
-      margin: auto;
-      line-height: calc(100vh - 50px);
-      text-align: center;
-    }
-    .hide {
-      display: none;
-    }
-    .heading {
-      height: 50px;
-      line-height: 50px;
-      font-size: 24px;
-      border-bottom: 1px solid black;
-      text-align: center;
-    }
-    .radio {
-      margin-right: 10px;
-      border: 1px solid black;
-      padding: 2px;
-      border-radius: 5px;
-    }
-    .buttons {
-      display: flex;
-      flex-direction: row;
-      justify-content: flex-start;
-      flex-wrap: wrap;
-    }
-    .button-padding {
-      margin: 5px;
-      min-width: 60px;
-      height: 30px;
-    }
-    @media( max-width: 500px) {
-      .content {
-        margin: 0px;
-      }
-    }
-    @media ( min-width: 500px) {
-      .content {
-        max-width: 500px;
-        margin: 0px auto;
-      }
-    }
-    .align-end {
-      text-align: end;
-    }
-    .score {
-      margin-top: 15px;
-      max-width: 500px;
-      width: 100vw;
-    }
-    .slider {
-      margin: 10px 0px;
-    }
-  </style>
-</head>
 <html>
+  <head>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no'>
+    <link rel="icon" href="logo.png" type="image/png">
+    <title>Interlude</title>
+    <style>
+      .loading {
+        position: absolute;
+        top: 50px;
+        left: 0px;
+        width: 100vw;
+        height: calc(100vh - 50px);
+        background-color: antiquewhite;
+        margin: auto;
+        line-height: calc(100vh - 50px);
+        text-align: center;
+      }
+      .hide {
+        display: none;
+      }
+      .heading {
+        height: 50px;
+        line-height: 50px;
+        font-size: 24px;
+        border-bottom: 1px solid black;
+        text-align: center;
+      }
+      .radio {
+        margin-right: 10px;
+        border: 1px solid black;
+        padding: 2px;
+        border-radius: 5px;
+      }
+      .buttons {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+      }
+      .button-padding {
+        margin: 5px;
+        min-width: 60px;
+        height: 30px;
+      }
+      @media( max-width: 500px) {
+        .content {
+          margin: 0px;
+        }
+      }
+      @media ( min-width: 500px) {
+        .content {
+          max-width: 500px;
+          margin: 0px auto;
+        }
+      }
+      .align-end {
+        text-align: end;
+      }
+      .score {
+        margin-top: 15px;
+        max-width: 500px;
+        width: 100vw;
+      }
+      .slider {
+        margin: 10px 0px;
+      }
+    </style>
+  </head>
+
   <body>
     <div class="content">
 
-      <div class="heading">Reflection of the moon on Er Quan</div>
+      <div class="heading">Interlude</div>
       <p class="align-end"><a href="index.html">Home</a></p>
 
-      <p>Also called "Erquan Yingyue"</p>
       <p>
-        Composed by <a target="_blank" href="https://en.wikipedia.org/wiki/Abing">Abing (or Hua Yanjun)</a>.
-        To me it sounds like there are a lot of variations from the original piece.
+        An ear training melody Lila learnt on her travels.
       </p>
-      <p>Three of his compositions available on <a target="_blank" href="https://imslp.org/wiki/Category:Abing">IMSLP</a>.</p>
 
-      <p><a target="_blank" href="https://www.youtube.com/watch?v=8ePl2iRkU_I&ab_channel=653672">A version played by Wang Guowei</a></p>
-      <p><a target="_blank" href="https://youtu.be/08zLyfwJQ4o?si=dGFB7nHHOazLIAl0">A version played by Guo Gan</a></p>
-      <p><a target="_blank" href="https://www.youtube.com/watch?v=Fj13KU3SAvE&ab_channel=hacona">A version played by Song Fei</a></p>
-      <p><a target="_blank" href="https://www.youtube.com/watch?v=tSJMFni-f6Q&ab_channel=ledragondejade">A version played by Lei Qiang</a></p>
-      <p><a target="_blank" href="reflection-of-the-moon-on-er-quan_ jun-chen.mp3">A version played by Jun Chen</a></p>
-
-      <p>Using version played by Guo Gan to learn from</p>
-
-      <audio id="player" controls src="reflection-of-the-moon-on-er-quan_guo-gan.mp3"></audio>
+      <audio id="player" controls src="interlude_Lila-Sklar.m4a"></audio>
 
       <div>
         <label for="loop">Loop</label>
@@ -127,9 +117,9 @@
       </div>
       <div id="slider" class="slider"></div>
 
-      <object type="application/pdf" data="erquan-yingyue_abing.pdf" width="500" height="800"></object>
-      <!-- <img class="score" src="the-entertainer-1.png"/> -->
+      <!-- <img class="score" src="Pastoral-3-1953-Sha-Hankun.png"/> -->
 
+      <!-- <object type="application/pdf" data="Pastorale.pdf" width="500" height="700"></object> -->
     </div>
 
     <script src="double-slider.js"></script>
@@ -210,19 +200,19 @@
       }
 
       // __SONG_FRAGMENTS_BUTTONS__
-      createButton( 'Entire', 0, 408 );
-      createButton( 'A', 0, 42.8 );
-      // createButton( 'B', 51.8, 80.3 );
-      // createButton( 'C', 80.3, 105.4 );
-      // createButton( 'D', 105.4, 155.9 );
-      // createButton( 'E', 155.9, 179.7 );
-      // createButton( 'F', 179.7, 210);
+      createButton('Entire', 0, 57);
+      createButton('A', 0, 9.1);
+      createButton('B', 9.1, 16);
+      createButton('C', 16.0, 21.8);
+      createButton('D', 21.8, 36.6);
+      createButton('E', 36.6, 45.6);
+      createButton('F', 45.6, 57);
       
       class Slider extends DoubleSlider {
         constructor(...args) {
           super(...args);
           const songStarts = 0;
-          const songEnds = 6*60 + 48;
+          const songEnds = 57;
 
           // fractional seconds
           this.min = songStarts * 10;
