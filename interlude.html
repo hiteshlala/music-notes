@@ -53,12 +53,12 @@
       .button-label-time {
         font-size: 7px;
       }
-      @media( max-width: 500px) {
+      @media(max-width: 500px) {
         .content {
           margin: 0px;
         }
       }
-      @media ( min-width: 500px) {
+      @media(min-width: 500px) {
         .content {
           max-width: 500px;
           margin: 0px auto;
@@ -205,14 +205,12 @@
       function createButton(text, start, stop) {
         const b = document.createElement('button');
         b.className = 'button-padding';
-        // b.innerText = text;
         b.innerHTML = `
           <div class="button-label">
             <div class="button-label-name">${text}</div>
             <div class="button-label-time">${start} - ${stop}</div>
           </div>
         `;
-
         b.onclick = createButtonClickFunction( start, stop );
         buttons.appendChild(b);
       }
@@ -222,9 +220,10 @@
       createButton('A', 0, 9.1);
       createButton('B', 9.1, 16);
       createButton('C', 16.0, 21.8);
-      createButton('D', 21.8, 36.6);
-      createButton('E', 36.6, 45.6);
-      createButton('F', 45.6, 57);
+      createButton('D', 21.8, 26.2);
+      createButton('E', 26.1, 36.6);
+      createButton('F', 36.6, 45.6);
+      createButton('G', 45.6, 57);
       
       class Slider extends DoubleSlider {
         constructor(...args) {

@@ -43,6 +43,16 @@
         min-width: 60px;
         height: 30px;
       }
+      .button-label {
+        display: flex;
+        flex-direction: column;
+      }
+      .button-label-name {
+        font-size: 9px;
+      }
+      .button-label-time {
+        font-size: 7px;
+      }
       @media( max-width: 500px) {
         .content {
           margin: 0px;
@@ -206,7 +216,12 @@
       function createButton(text, start, stop) {
         const b = document.createElement('button');
         b.className = 'button-padding';
-        b.innerText = text;
+        b.innerHTML = `
+          <div class="button-label">
+            <div class="button-label-name">${text}</div>
+            <div class="button-label-time">${start} - ${stop}</div>
+          </div>
+        `;
         b.onclick = createButtonClickFunction( start, stop );
         buttons.appendChild(b);
       }
