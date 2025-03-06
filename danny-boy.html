@@ -57,6 +57,27 @@
       <!-- <img class="score" src="Pastoral-3-1953-Sha-Hankun.png"/> -->
 
       <!-- <object type="application/pdf" data="Pastorale.pdf" width="500" height="700"></object> -->
+      <div class="poem">
+        <p>Words from <a href="https://en.wikipedia.org/wiki/Danny_Boy" target="_blank">Wikipedia</a></p>
+        <p>Oh, Danny boy, the pipes, the pipes are calling<br>
+        From glen to glen, and down the mountain side.<br>
+        The summer's gone, and all the roses falling,<br>
+        It's you, it's you must go and I must bide.<br>
+        But come ye back when summer's in the meadow,<br>
+        Or when the valley's hushed and white with snow,<br>
+        It's I'll be here in sunshine or in shadow,—<br>
+        Oh, Danny boy, Oh Danny boy, I love you so!<br>
+        <br>
+        But when ye come, and all the flowers are dying,<br>
+        If I am dead, as dead I well may be,<br>
+        Ye'll come and find the place where I am lying,<br>
+        And kneel and say an Avé there for me.<br>
+        And I shall hear, though soft you tread above me,<br>
+        And all my grave will warmer, sweeter be,<br>
+        For you will bend and tell me that you love me,<br>
+        And I shall sleep in peace until you come to me!
+        </p>
+        </div>
     </div>
 
     <script src="double-slider.js"></script>
@@ -64,11 +85,11 @@
     <script src="setup.js"></script>
     <script>
       // __SONG_FRAGMENTS_BUTTONS__
-      createButton('Entire', 0, 72, buttons);
-      // createButton('A', 2, 10.5, buttons);
-      // createButton('B', 10.5, 21.8, buttons);
-      // createButton('C', 21.8, 40, buttons);
-      // createButton('D', 40, 49.3, buttons);
+      createButton('Entire', 0.5, 72, buttons);
+      createButton('A', 0.5, 19.4, buttons);
+      createButton('B', 19.4, 35.5, buttons);
+      createButton('C', 37.0, 51.8, buttons);
+      createButton('D', 51.7, 72, buttons);
 
       const slider = new AudioSlider('slider', player, 0, 72 );
       slider.init();
