@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no'>
+    <link rel="icon" href="logo.png" type="image/png">
+    <link rel="stylesheet" href="main.css">
+    <title>Maggie West Waltz</title>
+  </head>
+
+  <body>
+    <div class="content">
+
+      <div class="heading">Maggie West Waltz</div>
+      <p class="align-end"><a href="index.html">Home</a></p>
+
+      <p>Ear training exercise at summer camp presented by Sadie</p>
+
+      <!-- <p><a target="_blank" href="https://www.youtube.com/watch?v=So1wWBc-ezU">Not sure who plays</a></p> -->
+
+      <audio id="player" controls src="maggie-west_Sadie-Romain.m4a"></audio>
+
+      <div>
+        <label for="loop">Loop</label>
+        <input id="loop" type="checkbox" name="loop" onclick="setLoop()">
+      </div>
+
+      <div>
+        <p>
+          Speed:
+          <span class="radio">
+            <label for=".25">0.25</label>
+            <input type="radio" name="speed" id=".25" onclick="selectSpeed(0.25)">
+          </span>
+          
+          <span class="radio">
+            <label for=".5">0.5</label>
+            <input type="radio" name="speed" id=".5" onclick="selectSpeed(0.5)">
+          </span>
+          
+          <span class="radio">
+            <label for=".75">0.75</label>
+            <input type="radio" name="speed" id=".75" onclick="selectSpeed(0.75)">
+          </span>
+          
+          <span class="radio">
+            <label for="1">1</label>
+            <input type="radio" name="speed" id="1" onclick="selectSpeed(1)" checked>
+          </span>
+        </p>
+      </div>
+
+      <div id="buttons" class="buttons"></div>
+
+      <div>
+        <button class="button-padding" onclick="slider.useSliders()">Use Sliders</button>
+      </div>
+      <div id="slider" class="slider"></div>
+
+      <!-- <img class="score" src="Pastoral-3-1953-Sha-Hankun.png"/> -->
+
+      <!-- <object type="application/pdf" data="Pastorale.pdf" width="500" height="700"></object> -->
+
+    <script src="double-slider.js"></script>
+    <script src="audio-slider.js"></script>
+    <script src="setup.js"></script>
+    <script>
+      // __SONG_FRAGMENTS_BUTTONS__
+      createButton('Entire', 0, 57, buttons);
+
+      const slider = new AudioSlider('slider', player, 0, 57 );
+      slider.init();
+
+    </script>
+  </body>
+</html>
