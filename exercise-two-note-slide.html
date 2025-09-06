@@ -61,7 +61,7 @@
       <div class="controls">
         <span>
           Repeats:
-          <input id="repeats" type="number" value="5" min="1" max="20" oninput="repetitions = Number(this.value)"/>
+          <input id="repeats" type="number" value="5" min="1" max="20" oninput="setRepeats()"/>
         </span>
         <button onclick="playSlide()">Start</button>
         <button onclick="stopSlide()">Stop</button>
@@ -86,9 +86,27 @@
       let slideNotes = [];
       let repetitions = 5;
       let currentSynth;
-      
+
       const notesPerString = 25; // two octaves
       const trapezoids = [];
+
+      window.onload = () => {
+        const params = new URLSearchParams(window.location.search);
+        const from = params.get('from');
+        const to = params.get('to');
+        const repeats = params.get('repeats');
+        if (from) slideNotes.push(from);
+        if (to) slideNotes.push(to);
+        if (repeats) {
+          const r = Number(repeats);
+          if (!isNaN(r) && r >= 1 && r <= 20) {
+            repetitions = r;
+            document.getElementById('repeats').value = r;
+          } 
+        }
+        drawDiagram();
+        drawNotes();
+      };
 
       function midiToNote(midi) {
         const notes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
@@ -190,7 +208,6 @@
         }
       });
 
-      drawDiagram();
 
       async function playSlide() {
         const [from, to] = slideNotes;
@@ -232,8 +249,6 @@
         }
       }
 
-      
-
       function drawNotes() {
         if (slideNotes.length === 0) {
           return;
@@ -247,9 +262,27 @@
 
         document.getElementById('from').textContent = slideNotes[0] || '';
         document.getElementById('to').textContent = slideNotes[1] || '';
+
+        setSearch();
       }
 
+      function setRepeats() {
+        const r = Number(document.getElementById('repeats').value);
+        if (!isNaN(r) && r >= 1 && r <= 20) {
+          repetitions = r;
+          document.getElementById('repeats').value = r;
+          setSearch();
+        }
+      }
 
+      function setSearch() {
+        const params = new URLSearchParams();
+        if (slideNotes[0]) params.set('from', slideNotes[0]);
+        if (slideNotes[1]) params.set('to', slideNotes[1]);
+        if (repetitions) params.set('repeats', repetitions);
+        const newUrl = window.location.pathname + '?' + params.toString();
+        window.history.replaceState({}, '', newUrl);
+      }
     </script>
   </body>
 </html>
