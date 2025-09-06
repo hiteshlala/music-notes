@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no'>
+    <link rel="icon" href="logo.png" type="image/png">
+    <link rel="stylesheet" href="main.css">
+    <title>Exercise - two note slide</title>
+    <style>
+      .note-slide-pair {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 20px;
+        font-size: 24px;
+        gap: 20px;
+      }
+      .notename {
+        width: 80px;
+        height: 40px;
+        border: 2px solid #aaaaef;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #e0e0ff65;
+        font-weight: bold;
+      }
+      .controls {
+        margin-top: 20px;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        flex-direction: row;
+        gap: 20px;
+        align-items: center;
+      }
+      .controls input, .controls button {
+        /* font-size: 16px; */
+        padding: 8px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="content">
+
+      <div class="heading">Exercise - two note slide</div>
+      <p class="align-end"><a href="index.html">Home</a></p>
+
+
+      <p>Each row represents a string on the violin.  Select two notes to practice sliding betwen them.</p>
+      <canvas id="canvas" width="500" height="200"></canvas>
+
+      
+
+      <div class="note-slide-pair">
+        <div id="from" class="notename"></div>
+        <div> <=====> </div>
+        <div id="to" class="notename"></div>
+      </div>
+
+      <div class="controls">
+        <span>
+          Repeats:
+          <input id="repeats" type="number" value="5" min="1" max="20" oninput="repetitions = Number(this.value)"/>
+        </span>
+        <button onclick="playSlide()">Start</button>
+        <button onclick="stopSlide()">Stop</button>
+      </div>
+
+    </div>
+    <script src="tone.js"></script>
+
+    <script>
+      const canvas = document.getElementById('canvas');
+      const ctx = canvas.getContext('2d');
+
+      // Violin string tuning (5-string): C3, G3, D4, A4, E5
+      const strings = [
+        { name: 'E', startNote: 76 }, // E5 MIDI
+        { name: 'A', startNote: 69 }, // A4 MIDI
+        { name: 'D', startNote: 62 }, // D4 MIDI
+        { name: 'G', startNote: 55 }, // G3 MIDI
+        { name: 'C', startNote: 48 }, // C3 MIDI
+      ];
+
+      let slideNotes = [];
+      let repetitions = 5;
+      let currentSynth;
+      
+      const notesPerString = 25; // two octaves
+      const trapezoids = [];
+
+      function midiToNote(midi) {
+        const notes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+        const octave = Math.floor(midi / 12) - 1;
+        return notes[midi % 12] + octave;
+      }
+
+      function drawDiagram() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        trapezoids.length = 0;
+        const margin = 30;
+        const stringGap = (canvas.height - 2 * margin) / (strings.length - 1);
+        const noteWidth = (canvas.width - 2 * margin) / notesPerString;
+        const trapezoidHeight = 28;
+
+        for (let string = 0; string < strings.length; string++) {
+          const y = margin + string * stringGap;
+          for (let note = 0; note < notesPerString; note++) {
+            const x = margin + note * noteWidth;
+            // Trapezoid points
+            const topY = y - trapezoidHeight / 2;
+            const bottomY = y + trapezoidHeight / 2;
+            const topWidth = noteWidth * 0.8; //noteWidth * 0.8;
+            const bottomWidth = topWidth; //noteWidth;
+            const x1 = x + (noteWidth - topWidth) / 2;
+            const x2 = x + (noteWidth + topWidth) / 2;
+            const x3 = x2; //x + noteWidth;
+            const x0 = x1; //x;
+
+            // Draw trapezoid
+            ctx.beginPath();
+            ctx.moveTo(x1, topY);
+            ctx.lineTo(x2, topY);
+            ctx.lineTo(x3, bottomY);
+            ctx.lineTo(x0, bottomY);
+            ctx.closePath();
+            ctx.fillStyle = '#e0e0ff65'; //'#e0e0ff';
+            ctx.strokeStyle = '#aaaaef';//'#333';
+            ctx.lineWidth = 1;
+            ctx.fill();
+            ctx.stroke();
+
+            // Note label
+            const midi = strings[string].startNote + note;
+            const noteName = midiToNote(midi);
+            ctx.fillStyle = '#222';
+            ctx.font = '8px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText(noteName, x + noteWidth / 2, y + 4);
+
+            // Save trapezoid for click detection
+            trapezoids.push({
+              string, 
+              note, 
+              midi, 
+              noteName,
+              points: [
+                { x: x1, y: topY },
+                { x: x2, y: topY },
+                { x: x3, y: bottomY },
+                { x: x0, y: bottomY }
+              ]
+            });
+          }
+          // String label
+          ctx.fillStyle = '#444';
+          ctx.font = 'bold 12px Arial';
+          ctx.textAlign = 'right';
+          ctx.fillText(strings[string].name, margin - 8, y + 4);
+        }
+      }
+
+      
+      function pointInTrapezoid(px, py, points) {
+        // Simple polygon hit test
+        let inside = false;
+        for (let i = 0, j = points.length - 1; i < points.length; j = i++) {
+          const xi = points[i].x, yi = points[i].y;
+          const xj = points[j].x, yj = points[j].y;
+          if ((yi > py) !== (yj > py) &&
+              px < (xj - xi) * (py - yi) / (yj - yi) + xi) {
+            inside = !inside;
+          }
+        }
+        return inside;
+      }
+
+      canvas.addEventListener('click', function(e) {
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        for (const trap of trapezoids) {
+          if (pointInTrapezoid(x, y, trap.points)) {
+            // alert(`Clicked: ${trap.noteName} (String ${strings[trap.string].name})`);
+            slideNotes.push(trap.noteName);
+            drawNotes();
+            break;
+          }
+        }
+      });
+
+      drawDiagram();
+
+      async function playSlide() {
+        const [from, to] = slideNotes;
+        
+        if (!from || !to) { 
+          alert('Please select two notes by clicking on the diagram.');
+          return;
+        }
+
+        await Tone.start(); // required to start audio context on some browsers
+
+        // const now = Tone.now();
+        // console.log(now)
+        // const synth = new Tone.Synth().toDestination();
+        // synth.triggerAttackRelease("C4", "8n", now);
+        // synth.triggerAttackRelease("E4", "8n", now + 0.5);
+        // synth.triggerAttackRelease("G4", "8n", now + 1);
+        // synth.triggerAttackRelease("B4", "8n", now + 1.5);
+
+        // Slide
+        currentSynth = new Tone.Synth().toDestination();
+        const now = Tone.now();
+        for(let i = 0; i < repetitions; i++) {
+          const offset = i * 10 + now; // repeat every 11 seconds
+          currentSynth.triggerAttack(from, 3 + offset);
+          currentSynth.frequency.exponentialRampToValueAtTime(Tone.Frequency(to), 4 + offset);
+          currentSynth.triggerAttack(to, 7 + offset);
+          currentSynth.frequency.exponentialRampToValueAtTime(Tone.Frequency(from), 8 + offset);
+          currentSynth.triggerRelease(11 + offset);
+        }
+
+      }
+
+      function stopSlide() {
+        if (currentSynth) {
+          currentSynth.triggerRelease();
+          currentSynth.dispose();
+          currentSynth = null;
+        }
+      }
+
+      
+
+      function drawNotes() {
+        if (slideNotes.length === 0) {
+          return;
+        }
+
+        if (slideNotes.length > 2) {
+          slideNotes.shift(); // keep last 2 notes
+          drawNotes();
+          return;
+        }
+
+        document.getElementById('from').textContent = slideNotes[0] || '';
+        document.getElementById('to').textContent = slideNotes[1] || '';
+      }
+
+
+    </script>
+  </body>
+</html>
+
+</html>
