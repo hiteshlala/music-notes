@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no'>
+    <link rel="icon" href="logo.png" type="image/png">
+    <title>Exercise - Scales</title>
+    <style>
+      .heading {
+        height: 50px;
+        line-height: 50px;
+        font-size: 24px;
+        border-bottom: 1px solid black;
+        text-align: center;
+      }
+      @media( max-width: 500px) {
+        .content {
+          margin: 0px;
+        }
+      }
+      @media ( min-width: 500px) {
+        .content {
+          max-width: 500px;
+          margin: 0px auto;
+        }
+      }
+      .align-end {
+        text-align: end;
+      }
+      #vex {
+        height: 440px;
+        text-align: center;
+        border: 1px solid green;
+      }
+      #card-name {
+        text-align: center;
+        margin: 30px;
+        height: 40px;
+        line-height: 40px;
+        font-size: 36px;
+      }
+      .paused {
+        background-color: green;
+      }
+      .stop {
+        background-color: red;
+      }
+      svg {
+        transform: scale(2) translateY(60px);
+        /* background-color: aquamarine; */
+      }
+      .image {
+        text-align: center;
+      }
+
+    </style>
+  </head>
+  <body>
+    <div class="content">
+      <div class="heading">Exercise - Scales</div>
+      <p class="align-end"><a href="index.html">Home</a></p>
+      <div>
+        <p>
+          <span>Scale:</span>
+          <span>
+            <select id="select-scale" oninput="selectScale(event)"> 
+              <option value="chromatic">Chromatic</option>
+              <option value="C">C Major</option>
+              <option value="G">G Major</option>
+              <option value="D">D Major</option>
+              <option value="A">A Major</option>
+              <option value="E">E Major</option>
+              <option value="B">B Major</option>
+              <option value="F#">F# Major</option>
+              <option value="C#">C# Major</option>
+              <option value="F">F Major</option>
+              <option value="Bb">B♭ Major</option>
+              <option value="Eb">E♭ Major</option>
+              <option value="Ab">A♭ Major</option>
+              <option value="Db">D♭ Major</option>
+              <option value="Gb">G♭ Major</option>
+              <option value="Cb">C♭ Major</option>
+              <option value="Cm">C Minor</option>
+              <option value="Gm">G Minor</option>
+              <option value="Dm">D Minor</option>
+              <option value="Am">A Minor</option>
+              <option value="Em">E Minor</option>
+              <option value="Bm">B Minor</option>
+              <option value="F#m">F# Minor</option>
+              <option value="C#m">C# Minor</option>
+              <option value="Fm">F Minor</option>
+              <option value="Bbm">B♭ Minor</option>
+              <option value="Ebm">E♭ Minor</option>
+              <option value="Abm">A♭ Minor</option>
+              <option value="Dbm">D♭ Minor</option>
+              <option value="Gbm">G♭ Minor</option>
+              <option value="Cbm">C♭ Minor</option>
+            </select>
+          </span>
+          <label><span><input type="radio" name="scale-or-arpeggio" id="mode-scale" value="scale" oninput="selectMode(event)"></span><span>Scale</span></label>
+          <label><span><input type="radio" name="scale-or-arpeggio" id="mode-arpeggio-major" value="arpeggio-major" oninput="selectMode(event)"></span><span>Major Arpeggio</span></label>
+          <label><span><input type="radio" name="scale-or-arpeggio" id="mode-arpeggio-minor" value="arpeggio-minor" oninput="selectMode(event)"></span><span>Minor Arpeggio</span></label>
+        </p>
+        <p>
+          <span><input type="number" id="display-time" oninput="setTime(this)" value="1500"> Speed in ms</span>
+          <span><input type="checkbox" id="play-tone" oninput="selectPlayTone(event)" checked> Play Tone</span>
+        </p>
+
+        <p>
+          <!-- <span>Volume: <input type="range" id="volume" value="0.5" min="0" max="1" step="0.01" oninput="setVolume(event)"></span> -->
+          <button id="start-stop" onclick="startOrStop()">Start</button> 
+          <button id="pause" onclick="puaseUnpause()">Pause</button>
+        </p>
+      </div>
+      <div>
+        <div id="vex"></div>
+        <div id="card-name"></div>
+      </div>
+      <div class="image">
+        <img src="learn-notes_bass_alto_treble_clefs.png" />
+      </div>
+    </div>
+    <script src="learn-notes-vexflow.js"></script>
+    <script>
+      const { Factory, EasyScore, System } = Vex.Flow;
+      const state = {
+        playing: false,
+        paused: false,
+        currentDeck: [],
+        currentIndex: 0,
+        audioCtx: null,
+        gainNode: null,
+        
+        playTone: true,
+        chromatic: false,
+        scale: 'C',
+        mode: 'scale',
+        time: 1500,
+        volume: 0.5,
+      };
+      const startStop = document.getElementById('start-stop');
+      const playTone = document.getElementById('play-tone');
+      const pause = document.getElementById('pause');
+      const desc = document.getElementById('card-name');
+      const vex = document.getElementById('vex');
+      const timeInput = document.getElementById('display-time');
+      const scaleSelect = document.getElementById('select-scale');
+
+      const scales = {
+        'chromatic': [
+          'C3','C#3','D3','D#3','E3','F3','F#3','G3','G#3','A3','A#3','B3',
+          'C4','C#4','D4','D#4','E4','F4','F#4','G4','G#4','A4','A#4','B4',
+          'C5','C#5','D5','D#5','E5','F5','F#5','G5','G#5','A5','A#5','B5',
+          'C6','C#6','D6','D#6','E6','F6','F#6','G6','G#6','A6','A#6','B6',
+          'C7'
+        ],
+
+        // Major scales (from octave 3 up through several octaves to match the C example)
+        'C-scale': ['C3','D3','E3','F3','G3','A3','B3','C4','D4','E4','F4','G4','A4','B4','C5','D5','E5','F5','G5','A5','B5','C6','D6','E6','F6','G6','A6','B6','C7'],
+        'G-scale': ['G3','A3','B3','C4','D4','E4','F#4','G4','A4','B4','C5','D5','E5','F#5','G5','A5','B5','C6','D6','E6','F#6','G6','A6','B6','C7','D7','E7','F#7','G7'],
+        'D-scale': ['D3','E3','F#3','G3','A3','B3','C#4','D4','E4','F#4','G4','A4','B4','C#5','D5','E5','F#5','G5','A5','B5','C#6','D6','E6','F#6','G6','A6','B6','C#7','D7'],
+        'A-scale': ['A3','B3','C#4','D4','E4','F#4','G#4','A4','B4','C#5','D5','E5','F#5','G#5','A5','B5','C#6','D6','E6','F#6','G#6','A6','B6','C#7','D7','E7','F#7','G#7','A7'],
+        'E-scale': ['E3','F#3','G#3','A3','B3','C#4','D#4','E4','F#4','G#4','A4','B4','C#5','D#5','E5','F#5','G#5','A5','B5','C#6','D#6','E6','F#6','G#6','A6','B6','C#7','D#7','E7'],
+        'B-scale': ['B3','C#4','D#4','E4','F#4','G#4','A#4','B4','C#5','D#5','E5','F#5','G#5','A#5','B5','C#6','D#6','E6','F#6','G#6','A#6','B6','C#7','D#7','E7','F#7','G#7','A#7','B7'],
+        'F#-scale': ['F#3','G#3','A#3','B3','C#4','D#4','E#4','F#4','G#4','A#4','B4','C#5','D#5','E#5','F#5','G#5','A#5','B5','C#6','D#6','E#6','F#6','G#6','A#6','B6','C#7','D#7','E#7','F#7'],
+        'C#-scale': ['C#3','D#3','E#3','F#3','G#3','A#3','B#3','C#4','D#4','E#4','F#4','G#4','A#4','B#4','C#5','D#5','E#5','F#5','G#5','A#5','B#5','C#6','D#6','E#6','F#6','G#6','A#6','B#6','C#7'],
+        'F-scale': ['F3','G3','A3','Bb3','C4','D4','E4','F4','G4','A4','Bb4','C5','D5','E5','F5','G5','A5','Bb5','C6','D6','E6','F6','G6','A6','Bb6','C7','D7','E7','F7'],
+        'Bb-scale': ['Bb3','C4','D4','Eb4','F4','G4','A4','Bb4','C5','D5','Eb5','F5','G5','A5','Bb5','C6','D6','Eb6','F6','G6','A6','Bb6','C7','D7','Eb7','F7','G7','A7','Bb7'],
+        'Eb-scale': ['Eb3','F3','G3','Ab3','Bb3','C4','D4','Eb4','F4','G4','Ab4','Bb4','C5','D5','Eb5','F5','G5','Ab5','Bb5','C6','D6','Eb6','F6','G6','Ab6','Bb6','C7','D7','Eb7'],
+        'Ab-scale': ['Ab3','Bb3','C4','Db4','Eb4','F4','G4','Ab4','Bb4','C5','Db5','Eb5','F5','G5','Ab5','Bb5','C6','Db6','Eb6','F6','G6','Ab6','Bb6','C7','Db7','Eb7','F7','G7','Ab7'],
+        'Db-scale': ['Db3','Eb3','F3','Gb3','Ab3','Bb3','C4','Db4','Eb4','F4','Gb4','Ab4','Bb4','C5','Db5','Eb5','F5','Gb5','Ab5','Bb5','C6','Db6','Eb6','F6','Gb6','Ab6','Bb6','C7','Db7'],
+        'Gb-scale': ['Gb3','Ab3','Bb3','Cb4','Db4','Eb4','F4','Gb4','Ab4','Bb4','Cb5','Db5','Eb5','F5','Gb5','Ab5','Bb5','Cb6','Db6','Eb6','F6','Gb6','Ab6','Bb6','Cb7','Db7','Eb7','F7','Gb7'],
+        'Cb-scale': ['Cb3','Db3','Eb3','Fb3','Gb3','Ab3','Bb3','Cb4','Db4','Eb4','Fb4','Gb4','Ab4','Bb4','Cb5','Db5','Eb5','Fb5','Gb5','Ab5','Bb5','Cb6','Db6','Eb6','Fb6','Gb6','Ab6','Bb6','Cb7'],
+
+        // Minor scales (natural minor scales)
+        'Cm-scale': ['C3','D3','Eb3','F3','G3','Ab3','Bb3','C4','D4','Eb4','F4','G4','Ab4','Bb4','C5','D5','Eb5','F5','G5','Ab5','Bb5','C6','D6','Eb6','F6','G6','Ab6','Bb6','C7'],
+        'Gm-scale': ['G3','A3','Bb3','C4','D4','Eb4','F4','G4','A4','Bb4','C5','D5','Eb5','F5','G5','A5','Bb5','C6','D6','Eb6','F6','G6','A6','Bb6','C7','D7','Eb7','F7','G7'],
+        'Dm-scale': ['D3','E3','F3','G3','A3','Bb3','C4','D4','E4','F4','G4','A4','Bb4','C5','D5','E5','F5','G5','A5','Bb5','C6','D6','E6','F6','G6','A6','Bb6','C7'],
+        'Am-scale': ['A3','B3','C4','D4','E4','F4','G4','A4','B4','C5','D5','E5','F5','G5','A5','B5','C6','D6','E6','F6','G6','A6','B6','C7','D7','E7','F7','G7','A7'],
+        'Em-scale': ['E3','F#3','G3','A3','B3','C4','D4','E4','F#4','G4','A4','B4','C5','D5','E5','F#5','G5','A5','B5','C6','D6','E6','F#6','G6','A6','B6','C7','D7','E7','F#7','G7'],
+        'Bm-scale': ['B3','C#4','D4','E4','F#4','G4','A4','B4','C#5','D5','E5','F#5','G5','A5','B5','C#6','D6','E6','F#6','G6','A6','B6','C#7','D7','E7','F#7','G7','A7','B7'],
+        'F#m-scale': ['F#3','G#3','A3','B3','C#4','D4','E4','F#4','G#4','A4','B4','C#5','D5','E5','F#5','G#5','A5','B5','C#6','D6','E6','F#6','G#6','A6','B6','C#7','D7','E7','F#7','G7'],
+        'C#m-scale': ['C#3','D#3','E3','F#3','G#3','A3','B3','C#4','D#4','E4','F#4','G#4','A4','B4','C#5','D#5','E5','F#5','G#5','A5','B5','C#6','D#6','E6','F#6','G#6','A6','B6','C#7'],
+        'Fm-scale': ['F3','G3','Ab3','Bb3','C4','Db4','Eb4','F4','G4','Ab4','Bb4','C5','Db5','Eb5','F5','G5','Ab5','Bb5','C6','Db6','Eb6','F6','G6','Ab6','Bb6','C7','Db7','Eb7','F7'],
+        'Bbm-scale': ['Bb3','C4','Db4','Eb4','F4','Gb4','Ab4','Bb4','C5','Db5','Eb5','F5','Gb5','Ab5','Bb5','C6','Db6','Eb6','F6','Gb6','Ab6','Bb6','C7','Db7','Eb7','F7'],
+        'Ebm-scale': ['Eb3','F3','Gb3','Ab3','Bb3','Cb4','Db4','Eb4','F4','Gb4','Ab4','Bb4','Cb5','Db5','Eb5','F5','Gb5','Ab5','Bb5','Cb6','Db6','Eb6','F6','Gb6','Ab6','Bb6','Cb7','Db7','Eb7','F7'],
+        'Abm-scale': ['Ab3','Bb3','Cb4','Db4','Eb4','Fb4','Gb4','Ab4','Bb4','Cb5','Db5','Eb5','Fb5','Gb5','Ab5','Bb5','Cb6','Db6','Eb6','Fb6','Gb6','Ab6','Bb6','Cb7','Db7','Eb7','Fb7','Gb7','Ab7'],
+        'Dbm-scale': ['Db3','Eb3','Fb3','Gb3','Ab3','Bbb3','Cb4','Db4','Eb4','Fb4','Gb4','Ab4','Bbb4','Cb5','Db5','Eb5','Fb5','Gb5','Ab5','Bbb5','Cb6','Db6','Eb6','Fb6','Gb6','Ab6','Bbb6','Cb7'],
+        'Gbm-scale': ['Gb3','Ab3','Bbb3','Cb4','Db4','Ebb4','Fb4','Gb4','Ab4','Bbb4','Cb5','Db5','Ebb5','Fb5','Gb5','Ab5','Bbb5','Cb6','Db6','Ebb6','Fb6','Gb6','Ab6','Bbb6','Cb7'],
+        'Cbm-scale': ['Cb3','Db3','Ebb3','Fb3','Gb3','Abb3','Bbb3','Cb4','Db4','Ebb4','Fb4','Gb4','Abb4','Bbb4','Cb5','Db5','Ebb5','Fb5','Gb5','Abb5','Bbb5','Cb6','Db6','Ebb6','Fb6','Gb6','Abb6','Bbb6','Cb7'],
+
+        
+
+
+        // Major arpeggios (root - major third - perfect fifth across octaves)
+        'C-arpeggio-major': ['C3','E3','G3','C4','E4','G4','C5','E5','G5','C6','E6','G6','C7'],
+        'G-arpeggio-major': ['G3','B3','D4','G4','B4','D5','G5','B5','D6','G6','B6','D7','G7'],
+        'D-arpeggio-major': ['D3','F#3','A3','D4','F#4','A4','D5','F#5','A5','D6','F#6','A6','D7'],
+        'A-arpeggio-major': ['A3','C#4','E4','A4','C#5','E5','A5','C#6','E6','A6','C#7','E7','A7'],
+        'E-arpeggio-major': ['E3','G#3','B3','E4','G#4','B4','E5','G#5','B5','E6','G#6','B6','E7'],
+        'B-arpeggio-major': ['B3','D#4','F#4','B4','D#5','F#5','B5','D#6','F#6','B6','D#7','F#7','B7'],
+        'F#-arpeggio-major': ['F#3','A#3','C#4','F#4','A#4','C#5','F#5','A#5','C#6','F#6','A#6','C#7','F#7'],
+        'C#-arpeggio-major': ['C#3','E#3','G#3','C#4','E#4','G#4','C#5','E#5','G#5','C#6','E#6','G#6','C#7'],
+        'F-arpeggio-major': ['F3','A3','C4','F4','A4','C5','F5','A5','C6','F6','A6','C7','F7'],
+        'Bb-arpeggio-major': ['Bb3','D4','F4','Bb4','D5','F5','Bb5','D6','F6','Bb6','D7','F7','Bb7'],
+        'Eb-arpeggio-major': ['Eb3','G3','Bb3','Eb4','G4','Bb4','Eb5','G5','Bb5','Eb6','G6','Bb6','Eb7'],
+        'Ab-arpeggio-major': ['Ab3','C4','Eb4','Ab4','C5','Eb5','Ab5','C6','Eb6','Ab6','C7','Eb7','Ab7'],
+        'Db-arpeggio-major': ['Db3','F3','Ab3','Db4','F4','Ab4','Db5','F5','Ab5','Db6','F6','Ab6','Db7'],
+        'Gb-arpeggio-major': ['Gb3','Bb3','Db4','Gb4','Bb4','Db5','Gb5','Bb5','Db6','Gb6','Bb6','Db7','Gb7'],
+        'Cb-arpeggio-major': ['Cb3','Eb3','Gb3','Cb4','Eb4','Gb4','Cb5','Eb5','Gb5','Cb6','Eb6','Gb6','Cb7'],
+        'Cm-arpeggio-major': ['C3','Eb3','G3','C4','Eb4','G4','C5','Eb5','G5','C6','Eb6','G6','C7'],
+        'Gm-arpeggio-major': ['G3','Bb3','D4','G4','Bb4','D5','G5','Bb5','D6','G6','Bb6','D7','G7'],
+        'Dm-arpeggio-major': ['D3','F3','A3','D4','F4','A4','D5','F5','A5','D6','F6','A6','D7'],
+        'Am-arpeggio-major': ['A3','C4','E4','A4','C5','E5','A5','C6','E6','A6','C7','E7','A7'],
+        'Em-arpeggio-major': ['E3','G3','B3','E4','G4','B4','E5','G5','B5','E6','G6','B6','E7'],
+        'Bm-arpeggio-major': ['B3','D4','F#4','B4','D5','F#5','B5','D6','F#6','B6','D7','F#7','B7'],
+        'F#m-arpeggio-major': ['F#3','A3','C#4','F#4','A4','C#5','F#5','A5','C#6','F#6','A6','C#7','F#7'],
+        'C#m-arpeggio-major': ['C#3','E3','G#3','C#4','E4','G#4','C#5','E5','G#5','C#6','E6','G#6','C#7'],
+        'Fm-arpeggio-major': ['F3','Ab3','C4','F4','Ab4','C5','F5','Ab5','C6','F6','Ab6','C7','F7'],
+        'Bbm-arpeggio-major': ['Bb3','Db4','F4','Bb4','Db5','F5','Bb5','Db6','F6','Bb6','Db7','F7','Bb7'],
+        'Ebm-arpeggio-major': ['Eb3','Gb3','Bb3','Eb4','Gb4','Bb4','Eb5','Gb5','Bb5','Eb6','Gb6','Bb6','Eb7'],
+        'Abm-arpeggio-major': ['Ab3','Cb4','Eb4','Ab4','Cb5','Eb5','Ab5','Cb6','Eb6','Ab6','Cb7','Eb7','Ab7'],
+        'Dbm-arpeggio-major': ['Db3','Ebb3','Fb3','Db4','Ebb4','Fb4','Db5','Ebb5','Fb5','Db6','Ebb6','Fb6','Db7'],
+        'Gbm-arpeggio-major': ['Gb3','Bbb3','Db4','Gb4','Bbb4','Db5','Gb5','Bbb5','Db6','Gb6','Bbb6','Db7','Gb7'],
+        'Cbm-arpeggio-major': ['Cb3','Ebb3','Gb3','Cb4','Ebb4','Gb4','Cb5','Ebb5','Gb5','Cb6','Ebb6','Gb6','Cb7'],
+      
+
+        // Minor arpeggios (root - minor third - perfect fifth)
+        'C-arpeggio-minor': ['C3','Eb3','G3','C4','Eb4','G4','C5','Eb5','G5','C6','Eb6','G6','C7'],
+        'G-arpeggio-minor': ['G3','Bb3','D4','G4','Bb4','D5','G5','Bb5','D6','G6','Bb6','D7','G7'],
+        'D-arpeggio-minor': ['D3','F3','A3','D4','F4','A4','D5','F5','A5','D6','F6','A6','D7'],
+        'A-arpeggio-minor': ['A3','C4','E4','A4','C5','E5','A5','C6','E6','A6','C7','E7','A7'],
+        'E-arpeggio-minor': ['E3','G3','B3','E4','G4','B4','E5','G5','B5','E6','G6','B6','E7'],
+        'B-arpeggio-minor': ['B3','D4','F#4','B4','D5','F#5','B5','D6','F#6','B6','D7','F#7','B7'],
+        'F#-arpeggio-minor': ['F#3','A3','C#4','F#4','A4','C#5','F#5','A5','C#6','F#6','A6','C#7','F#7'],
+        'C#-arpeggio-minor': ['C#3','E3','G#3','C#4','E4','G#4','C#5','E5','G#5','C#6','E6','G#6','C#7'],
+        'F-arpeggio-minor': ['F3','Ab3','C4','F4','Ab4','C5','F5','Ab5','C6','F6','Ab6','C7','F7'],
+        'Bb-arpeggio-minor': ['Bb3','Db4','F4','Bb4','Db5','F5','Bb5','Db6','F6','Bb6','Db7','F7','Bb7'],
+        'Eb-arpeggio-minor': ['Eb3','Gb3','Bb3','Eb4','Gb4','Bb4','Eb5','Gb5','Bb5','Eb6','Gb6','Bb6','Eb7'],
+        'Ab-arpeggio-minor': ['Ab3','Cb4','Eb4','Ab4','Cb5','Eb5','Ab5','Cb6','Eb6','Ab6','Cb7','Eb7','Ab7'],
+        'Db-arpeggio-minor': ['Db3','Ebb3','Fb3','Db4','Ebb4','Fb4','Db5','Ebb5','Fb5','Db6','Ebb6','Fb6','Db7'],
+        'Gb-arpeggio-minor': ['Gb3','Bbb3','Db4','Gb4','Bbb4','Db5','Gb5','Bbb5','Db6','Gb6','Bbb6','Db7','Gb7'],
+        'Cb-arpeggio-minor': ['Cb3','Ebb3','Gb3','Cb4','Ebb4','Gb4','Cb5','Ebb5','Gb5','Cb6','Ebb6','Gb6','Cb7'],
+        'Cm-arpeggio-minor': ['C3','Eb3','G3','C4','Eb4','G4','C5','Eb5','G5','C6','Eb6','G6','C7'],
+        'Gm-arpeggio-minor': ['G3','Bb3','D4','G4','Bb4','D5','G5','Bb5','D6','G6','Bb6','D7','G7'],
+        'Dm-arpeggio-minor': ['D3','F3','A3','D4','F4','A4','D5','F5','A5','D6','F6','A6','D7'],    
+        'Am-arpeggio-minor': ['A3','C4','E4','A4','C5','E5','A5','C6','E6','A6','C7','E7','A7'],
+        'Em-arpeggio-minor': ['E3','G3','B3','E4','G4','B4','E5','G5','B5','E6','G6','B6','E7'],
+        'Bm-arpeggio-minor': ['B3','D4','F#4','B4','D5','F#5','B5','D6','F#6','B6','D7','F#7','B7'],
+        'F#m-arpeggio-minor': ['F#3','A3','C#4','F#4','A4','C#5','F#5','A5','C#6','F#6','A6','C#7','F#7'],
+        'C#m-arpeggio-minor': ['C#3','E3','G#3','C#4','E4','G#4','C#5','E5','G#5','C#6','E6','G#6','C#7'],
+        'Fm-arpeggio-minor': ['F3','Ab3','C4','F4','Ab4','C5','F5','Ab5','C6','F6','Ab6','C7','F7'],
+        'Bbm-arpeggio-minor': ['Bb3','Db4','F4','Bb4','Db5','F5','Bb5','Db6','F6','Bb6','Db7','F7','Bb7'],  
+        'Ebm-arpeggio-minor': ['Eb3','Gb3','Bb3','Eb4','Gb4','Bb4','Eb5','Gb5','Bb5','Eb6','Gb6','Bb6','Eb7'],
+        'Abm-arpeggio-minor': ['Ab3','Cb4','Eb4','Ab4','Cb5','Eb5','Ab5','Cb6','Eb6','Ab6','Cb7','Eb7','Ab7'],
+        'Dbm-arpeggio-minor': ['Db3','Ebb3','Fb3','Db4','Ebb4','Fb4','Db5','Ebb5','Fb5','Db6','Ebb6','Fb6','Db7'],
+        'Gbm-arpeggio-minor': ['Gb3','Bbb3','Db4','Gb4','Bbb4','Db5','Gb5','Bbb5','Db6','Gb6','Bbb6','Db7','Gb7'],
+        'Cbm-arpeggio-minor': ['Cb3','Ebb3','Gb3','Cb4','Ebb4','Gb4','Cb5','Ebb5','Gb5','Cb6','Ebb6','Gb6','Cb7'],
+      };
+      
+      // https://mixbutton.com/mixing-articles/music-note-to-frequency-chart/
+      const frequencies= {
+        'C2': 65.41, 'C#2': 69.3, 'Db2': 69.3, 'D2': 73.42, 'D#2': 77.78, 'Eb2': 77.78,
+        'E2': 82.41, 'E#2': 87.31, 'Fb2': 82.41, 'F2': 87.31, 'F#2': 92.5, 'G2': 98,
+        'G#2': 103.83, 'Ab2': 103.83, 'A2': 110, 'A#2': 116.54, 'Bb2': 116.54, 'B2': 123.47,
+        'B#2': 130.81,
+
+        'Cb3': 123.47, 'C3': 130.81, 'C#3': 138.59, 'Db3': 138.59, 'D3': 146.83, 'D#3': 155.56,
+        'Eb3': 155.56, 'E3': 164.81, 'E#3': 174.61, 'Fb3': 164.81, 'F3': 174.61, 'F#3': 185,
+        'G3': 196, 'G#3': 207.65, 'Gb3': 185, 'Ab3': 207.65, 'A3': 220, 'A#3': 233.08,
+        'Bb3': 233.08, 'B3': 246.94, 'B#3': 261.63,
+        
+        'Cb4': 246.94, 'C4': 261.63, 'C#4': 277.18, 'Db4': 277.18, 'D4': 293.66, 'D#4': 311.13,
+        'Eb4': 311.13, 'E4': 329.63, 'E#4': 349.23, 'Fb4': 329.63, 'F4': 349.23, 'F#4': 369.99,
+        'Gb4': 369.99, 'G4': 392, 'G#4': 415.3, 'Ab4': 415.3, 'A4': 440, 'A#4': 466.16,
+        'Bb4': 466.16, 'B4': 493.88, 'B#4': 523.25,
+
+        'Cb5': 493.88, 'C5': 523.25, 'C#5': 554.37, 'Db5': 554.37, 'D5': 587.33, 'D#5': 622.25,
+        'Eb5': 622.25, 'E5': 659.25, 'E#5': 698.46, 'Fb5': 659.25, 'F5': 698.46, 'F#5': 739.99,
+        'Gb5': 739.99, 'G5': 783.99, 'G#5': 830.61, 'Ab5': 830.61, 'A5': 880, 'A#5': 932.33,
+        'Bb5': 932.33, 'B5': 987.77, 'B#5': 1046.5, 
+        
+        'Cb6': 987.77, 'C6': 1046.5, 'C#6': 1108.73, 'Db6': 1108.73, 'D6': 1174.66, 'D#6': 1244.51,
+        'Eb6': 1244.51, 'E6': 1318.51, 'E#6': 1396.91,
+
+        // added by copilot
+        'Fb6': 1318.51, 'F6': 1396.91, 'F#6': 1479.98, 'Gb6': 1479.98, 'G6': 1567.98, 'G#6': 1661.22, 'Ab6': 1661.22,
+        'A6': 1760, 'A#6': 1864.66, 'Bb6': 1864.66, 'B6': 1975.53, 'B#6': 2093, 
+        'Cb7': 1975.53, 'C7': 2093, 'C#7': 2217.46, 'Db7': 2217.46, 'D7': 2349.32, 'D#7': 2489.02,
+        'Eb7': 2489.02, 'E7': 2637.02, 'E#7': 2793.83, 'Fb7': 2637.02, 'F7': 2793.83, 'F#7': 2959.96,
+        'Gb7': 2959.96, 'G7': 3135.96, 'G#7': 3322.44, 'Ab7': 3322.44, 'A7': 3520, 'A#7': 3729.31,
+        'Bb7': 3729.31, 'B7': 3951.07, 'B#7': 4186.01,
+      };
+
+
+      window.onload = () => {
+        state.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        state.gainNode = state.audioCtx.createGain();
+        // state.gainNode.connect(state.audioCtx.destination);
+
+        const params = new URLSearchParams(window.location.search);
+        state.scale = params.get('scale') || state.scale;
+        scaleSelect.value = state.scale;
+
+        state.mode = params.get('mode') || state.mode;
+        document.getElementById(`mode-${state.mode}`).checked = true;
+
+        if (params.get('time') && !isNaN(parseInt(params.get('time')))) {
+          state.time = parseInt(params.get('time'));
+          timeInput.value = state.time;
+        } else {
+          timeInput.value = state.time;
+        }
+
+        state.playTone = params.get('playTone') ? (params.get('playTone') === 'true' ? true : false) : state.playTone;
+        playTone.checked = state.playTone;
+      };
+
+      function setParams() {
+        const search = [
+          `scale=${state.scale}`,
+          `mode=${state.mode}`,
+          `time=${state.time}`,
+          `playTone=${state.playTone}`,
+        ];
+        window.location.search = search.join('&');
+      }
+
+      function startOrStop() {
+        startStop.classList.toggle('stop');
+        if (state.playing) {
+          state.playing = false;
+          startStop.innerText = 'Start';
+          state.currentDeck = [];
+          state.currentIndex = 0;
+        } else {
+          state.playing = true;
+          startStop.innerText = 'Stop';
+          const upTheScale = state.scale == 'chromatic' ? scales[state.scale] : scales[`${state.scale}-${state.mode}`];
+          const downTheScale = upTheScale.slice().reverse();
+          state.currentDeck = upTheScale.concat(downTheScale);
+
+          showCards();
+        }
+      }
+
+      function showCards() {
+        if (state.currentIndex >= state.currentDeck.length) {
+          return;
+        }
+        const note = state.currentDeck[state.currentIndex];
+        const clef = 'treble';
+        drawANote(note, clef);
+        if (playTone.checked) {
+          const howLong = 2 * state.time * 0.9 / 1000; // seconds
+          const freq = frequencies[note];
+          playNote(freq, howLong);
+        }
+        desc.innerText = note.replace('#', '♯').replace('b', '♭').replace(/[1-9]/, '');
+        setTimeout(() => {
+          desc.innerText = '';
+          state.currentIndex++;
+          if (state.currentIndex < state.currentDeck.length) {
+            !state.paused && showCards();
+          } else {
+            startStop.classList.remove('stop');
+            state.playing = false;
+            startStop.innerText = 'Start';
+            state.currentDeck = [];
+            state.currentIndex = 0;
+            state.paused = false;
+            pause.innerText = 'Pause';
+            pause.classList.remove('paused');
+          }
+        }, state.time + state.time);
+      }
+
+      function puaseUnpause() {
+        pause.classList.toggle('paused');
+        if (state.paused && state.currentIndex < state.currentDeck.length) {
+          pause.innerText = 'Pause';
+          showCards();
+          state.paused = false;
+        } else {
+          pause.innerText = 'Un-pause';
+          state.paused = true;
+        }
+      }
+      
+      function drawANote(note, clef) {
+        vex.innerHTML = '';
+        const vf = new Factory({
+          renderer: {
+            elementId: 'vex',
+            height: 200,
+            width: 160,
+          },
+        });
+        const score = vf.EasyScore();
+        const system = vf.System();
+
+        system.context.svg.setAttribute('viewBox', '0 -40 160 200');
+        
+        system
+          .addStave({
+            voices: [
+              score.voice(score.notes(`${note}/w`, { clef })),
+              // score.voice(score.notes('C2/8, G2, D3, A3, D4/q, A4', { clef: 'bass' })),
+              // score.voice(score.notes('C3/8, G3, D4, A4, D5/q, A5', { clef: 'alto' })),
+              // score.voice(score.notes('G3/8, D4, A4, E5, A5/q, E6', { clef: 'treble' })),
+            ],
+          })
+          .addClef(clef)
+        vf.draw();
+      }
+
+
+      // https://developer.mozilla.org/en-US/docs/Web/API/OscillatorNode
+      // https://stackoverflow.com/questions/39200994/how-to-play-a-specific-frequency-with-javascript
+      // https://stackoverflow.com/questions/69516768/web-audio-api-sound-interaction-stops-working-after-a-while
+
+      function playNote(frequency, duration, callback) {
+        const oscillator = state.audioCtx.createOscillator();
+        oscillator.type = 'sine';
+        oscillator.frequency.value = frequency; // value in hertz
+        // oscillator.connect(state.gainNode);
+        oscillator.connect(state.audioCtx.destination);
+        callback && (oscillator.onended = callback);
+        oscillator.start(0);
+        oscillator.stop(state.audioCtx.currentTime + duration); // seconds
+      }
+
+      function setTime(el) {
+        state.time = parseInt(el.value);
+        setParams();
+      }
+      
+      function selectScale(event) {
+        state.scale = event.target.value;
+        setParams();
+      }
+
+      function selectMode(event) {
+        state.mode = event.target.value;
+        setParams();
+      }
+      
+      function selectPlayTone(event) {
+        state.playTone = event.target.checked;
+        setParams();
+      }
+
+      function setVolume(event) {
+        console.log(event.target.value);
+        const volume = parseFloat(event.target.value);
+        state.volume = volume;
+        
+        // state.gainNode.gain.setValueAtTime(volume, state.audioCtx.currentTime);
+        
+        state.gainNode.gain.value = volume;
+        // state.gainNode.connect(state.audioCtx.destination);
+
+      }
+
+
+    </script>
+    
+  </body>
+</html>
