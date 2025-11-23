@@ -65,36 +65,51 @@
           <span>
             <select id="select-scale" oninput="selectScale(event)"> 
               <option value="chromatic">Chromatic</option>
+              
               <option value="C">C Major</option>
-              <option value="G">G Major</option>
-              <option value="D">D Major</option>
-              <option value="A">A Major</option>
-              <option value="E">E Major</option>
-              <option value="B">B Major</option>
-              <option value="F#">F# Major</option>
-              <option value="C#">C# Major</option>
-              <option value="F">F Major</option>
-              <option value="Bb">B♭ Major</option>
-              <option value="Eb">E♭ Major</option>
-              <option value="Ab">A♭ Major</option>
-              <option value="Db">D♭ Major</option>
-              <option value="Gb">G♭ Major</option>
-              <option value="Cb">C♭ Major</option>
               <option value="Cm">C Minor</option>
+              <option value="G">G Major</option>
               <option value="Gm">G Minor</option>
+              <option value="D">D Major</option>
               <option value="Dm">D Minor</option>
+              <option value="A">A Major</option>
               <option value="Am">A Minor</option>
+              <option value="E">E Major</option>
               <option value="Em">E Minor</option>
+              <option value="B">B Major</option>
               <option value="Bm">B Minor</option>
-              <option value="F#m">F# Minor</option>
-              <option value="C#m">C# Minor</option>
+              <option value="F">F Major</option>
               <option value="Fm">F Minor</option>
-              <option value="Bbm">B♭ Minor</option>
-              <option value="Ebm">E♭ Minor</option>
-              <option value="Abm">A♭ Minor</option>
-              <option value="Dbm">D♭ Minor</option>
-              <option value="Gbm">G♭ Minor</option>
+              
+              <!-- <option value="Cb">C♭ Major</option>
               <option value="Cbm">C♭ Minor</option>
+              <option value="Gb">G♭ Major</option>
+              <option value="Gbm">G♭ Minor</option>
+              <option value="Db">D♭ Major</option>
+              <option value="Dbm">D♭ Minor</option>
+              <option value="Ab">A♭ Major</option>
+              <option value="Abm">A♭ Minor</option>
+              <option value="Eb">E♭ Major</option>
+              <option value="Ebm">E♭ Minor</option>
+              <option value="Bb">B♭ Major</option>
+              <option value="Bbm">B♭ Minor</option>
+              <option value="Fb">F♭ Major</option>
+              <option value="Fbm">F♭ Minor</option>
+              
+              <option value="C#">C# Major</option>
+              <option value="C#m">C# Minor</option>
+              <option value="G#">G# Major</option>
+              <option value="G#m">G# Minor</option>
+              <option value="D#">D# Major</option>
+              <option value="D#m">D# Minor</option>
+              <option value="A#">A# Major</option>
+              <option value="A#m">A# Minor</option>
+              <option value="E#">E# Major</option>
+              <option value="E#m">E# Minor</option>
+              <option value="B#">B# Major</option>
+              <option value="B#m">B# Minor</option>
+              <option value="F#">F# Major</option>
+              <option value="F#m">F# Minor</option> -->
             </select>
           </span>
           <label><span><input type="radio" name="scale-or-arpeggio" id="mode-scale" value="scale" oninput="selectMode(event)"></span><span>Scale</span></label>
@@ -155,107 +170,179 @@
           'C7'
         ],
 
-        // Major scales (from octave 3 up through several octaves to match the C example)
         'C-scale': ['C3','D3','E3','F3','G3','A3','B3','C4','D4','E4','F4','G4','A4','B4','C5','D5','E5','F5','G5','A5','B5','C6','D6','E6','F6','G6','A6','B6','C7'],
-        'G-scale': ['G3','A3','B3','C4','D4','E4','F#4','G4','A4','B4','C5','D5','E5','F#5','G5','A5','B5','C6','D6','E6','F#6','G6','A6','B6','C7','D7','E7','F#7','G7'],
-        'D-scale': ['D3','E3','F#3','G3','A3','B3','C#4','D4','E4','F#4','G4','A4','B4','C#5','D5','E5','F#5','G5','A5','B5','C#6','D6','E6','F#6','G6','A6','B6','C#7','D7'],
-        'A-scale': ['A3','B3','C#4','D4','E4','F#4','G#4','A4','B4','C#5','D5','E5','F#5','G#5','A5','B5','C#6','D6','E6','F#6','G#6','A6','B6','C#7','D7','E7','F#7','G#7','A7'],
-        'E-scale': ['E3','F#3','G#3','A3','B3','C#4','D#4','E4','F#4','G#4','A4','B4','C#5','D#5','E5','F#5','G#5','A5','B5','C#6','D#6','E6','F#6','G#6','A6','B6','C#7','D#7','E7'],
-        'B-scale': ['B3','C#4','D#4','E4','F#4','G#4','A#4','B4','C#5','D#5','E5','F#5','G#5','A#5','B5','C#6','D#6','E6','F#6','G#6','A#6','B6','C#7','D#7','E7','F#7','G#7','A#7','B7'],
-        'F#-scale': ['F#3','G#3','A#3','B3','C#4','D#4','E#4','F#4','G#4','A#4','B4','C#5','D#5','E#5','F#5','G#5','A#5','B5','C#6','D#6','E#6','F#6','G#6','A#6','B6','C#7','D#7','E#7','F#7'],
-        'C#-scale': ['C#3','D#3','E#3','F#3','G#3','A#3','B#3','C#4','D#4','E#4','F#4','G#4','A#4','B#4','C#5','D#5','E#5','F#5','G#5','A#5','B#5','C#6','D#6','E#6','F#6','G#6','A#6','B#6','C#7'],
-        'F-scale': ['F3','G3','A3','Bb3','C4','D4','E4','F4','G4','A4','Bb4','C5','D5','E5','F5','G5','A5','Bb5','C6','D6','E6','F6','G6','A6','Bb6','C7','D7','E7','F7'],
-        'Bb-scale': ['Bb3','C4','D4','Eb4','F4','G4','A4','Bb4','C5','D5','Eb5','F5','G5','A5','Bb5','C6','D6','Eb6','F6','G6','A6','Bb6','C7','D7','Eb7','F7','G7','A7','Bb7'],
-        'Eb-scale': ['Eb3','F3','G3','Ab3','Bb3','C4','D4','Eb4','F4','G4','Ab4','Bb4','C5','D5','Eb5','F5','G5','Ab5','Bb5','C6','D6','Eb6','F6','G6','Ab6','Bb6','C7','D7','Eb7'],
-        'Ab-scale': ['Ab3','Bb3','C4','Db4','Eb4','F4','G4','Ab4','Bb4','C5','Db5','Eb5','F5','G5','Ab5','Bb5','C6','Db6','Eb6','F6','G6','Ab6','Bb6','C7','Db7','Eb7','F7','G7','Ab7'],
-        'Db-scale': ['Db3','Eb3','F3','Gb3','Ab3','Bb3','C4','Db4','Eb4','F4','Gb4','Ab4','Bb4','C5','Db5','Eb5','F5','Gb5','Ab5','Bb5','C6','Db6','Eb6','F6','Gb6','Ab6','Bb6','C7','Db7'],
-        'Gb-scale': ['Gb3','Ab3','Bb3','Cb4','Db4','Eb4','F4','Gb4','Ab4','Bb4','Cb5','Db5','Eb5','F5','Gb5','Ab5','Bb5','Cb6','Db6','Eb6','F6','Gb6','Ab6','Bb6','Cb7','Db7','Eb7','F7','Gb7'],
-        'Cb-scale': ['Cb3','Db3','Eb3','Fb3','Gb3','Ab3','Bb3','Cb4','Db4','Eb4','Fb4','Gb4','Ab4','Bb4','Cb5','Db5','Eb5','Fb5','Gb5','Ab5','Bb5','Cb6','Db6','Eb6','Fb6','Gb6','Ab6','Bb6','Cb7'],
-
-        // Minor scales (natural minor scales)
+        'C-arpeggio-major': ['C3','E3','G3','C4','E4','G4','C5','E5','G5','C6','E6','G6','C7'],
+        'C-arpeggio-minor': ['C3','Eb3','G3','C4','Eb4','G4','C5','Eb5','G5','C6','Eb6','G6','C7'],
+        
         'Cm-scale': ['C3','D3','Eb3','F3','G3','Ab3','Bb3','C4','D4','Eb4','F4','G4','Ab4','Bb4','C5','D5','Eb5','F5','G5','Ab5','Bb5','C6','D6','Eb6','F6','G6','Ab6','Bb6','C7'],
-        'Gm-scale': ['G3','A3','Bb3','C4','D4','Eb4','F4','G4','A4','Bb4','C5','D5','Eb5','F5','G5','A5','Bb5','C6','D6','Eb6','F6','G6','A6','Bb6','C7','D7','Eb7','F7','G7'],
-        'Dm-scale': ['D3','E3','F3','G3','A3','Bb3','C4','D4','E4','F4','G4','A4','Bb4','C5','D5','E5','F5','G5','A5','Bb5','C6','D6','E6','F6','G6','A6','Bb6','C7'],
-        'Am-scale': ['A3','B3','C4','D4','E4','F4','G4','A4','B4','C5','D5','E5','F5','G5','A5','B5','C6','D6','E6','F6','G6','A6','B6','C7','D7','E7','F7','G7','A7'],
-        'Em-scale': ['E3','F#3','G3','A3','B3','C4','D4','E4','F#4','G4','A4','B4','C5','D5','E5','F#5','G5','A5','B5','C6','D6','E6','F#6','G6','A6','B6','C7','D7','E7','F#7','G7'],
-        'Bm-scale': ['B3','C#4','D4','E4','F#4','G4','A4','B4','C#5','D5','E5','F#5','G5','A5','B5','C#6','D6','E6','F#6','G6','A6','B6','C#7','D7','E7','F#7','G7','A7','B7'],
-        'F#m-scale': ['F#3','G#3','A3','B3','C#4','D4','E4','F#4','G#4','A4','B4','C#5','D5','E5','F#5','G#5','A5','B5','C#6','D6','E6','F#6','G#6','A6','B6','C#7','D7','E7','F#7','G7'],
+        'Cm-arpeggio-major': ['C3','Eb3','G3','C4','Eb4','G4','C5','Eb5','G5','C6','Eb6','G6','C7'],
+        'Cm-arpeggio-minor': ['C3','Eb3','G3','C4','Eb4','G4','C5','Eb5','G5','C6','Eb6','G6','C7'],
+        
+        'C#-scale': ['C#3','D#3','E#3','F#3','G#3','A#3','B#3','C#4','D#4','E#4','F#4','G#4','A#4','B#4','C#5','D#5','E#5','F#5','G#5','A#5','B#5','C#6','D#6','E#6','F#6','G#6','A#6','B#6','C#7'],
+        'C#-arpeggio-major': ['C#3','E#3','G#3','C#4','E#4','G#4','C#5','E#5','G#5','C#6','E#6','G#6','C#7'],
+        'C#-arpeggio-minor': ['C#3','E3','G#3','C#4','E4','G#4','C#5','E5','G#5','C#6','E6','G#6','C#7'],
+        
         'C#m-scale': ['C#3','D#3','E3','F#3','G#3','A3','B3','C#4','D#4','E4','F#4','G#4','A4','B4','C#5','D#5','E5','F#5','G#5','A5','B5','C#6','D#6','E6','F#6','G#6','A6','B6','C#7'],
-        'Fm-scale': ['F3','G3','Ab3','Bb3','C4','Db4','Eb4','F4','G4','Ab4','Bb4','C5','Db5','Eb5','F5','G5','Ab5','Bb5','C6','Db6','Eb6','F6','G6','Ab6','Bb6','C7','Db7','Eb7','F7'],
-        'Bbm-scale': ['Bb3','C4','Db4','Eb4','F4','Gb4','Ab4','Bb4','C5','Db5','Eb5','F5','Gb5','Ab5','Bb5','C6','Db6','Eb6','F6','Gb6','Ab6','Bb6','C7','Db7','Eb7','F7'],
-        'Ebm-scale': ['Eb3','F3','Gb3','Ab3','Bb3','Cb4','Db4','Eb4','F4','Gb4','Ab4','Bb4','Cb5','Db5','Eb5','F5','Gb5','Ab5','Bb5','Cb6','Db6','Eb6','F6','Gb6','Ab6','Bb6','Cb7','Db7','Eb7','F7'],
-        'Abm-scale': ['Ab3','Bb3','Cb4','Db4','Eb4','Fb4','Gb4','Ab4','Bb4','Cb5','Db5','Eb5','Fb5','Gb5','Ab5','Bb5','Cb6','Db6','Eb6','Fb6','Gb6','Ab6','Bb6','Cb7','Db7','Eb7','Fb7','Gb7','Ab7'],
-        'Dbm-scale': ['Db3','Eb3','Fb3','Gb3','Ab3','Bbb3','Cb4','Db4','Eb4','Fb4','Gb4','Ab4','Bbb4','Cb5','Db5','Eb5','Fb5','Gb5','Ab5','Bbb5','Cb6','Db6','Eb6','Fb6','Gb6','Ab6','Bbb6','Cb7'],
-        'Gbm-scale': ['Gb3','Ab3','Bbb3','Cb4','Db4','Ebb4','Fb4','Gb4','Ab4','Bbb4','Cb5','Db5','Ebb5','Fb5','Gb5','Ab5','Bbb5','Cb6','Db6','Ebb6','Fb6','Gb6','Ab6','Bbb6','Cb7'],
+        'C#m-arpeggio-major': ['C#3','E3','G#3','C#4','E4','G#4','C#5','E5','G#5','C#6','E6','G#6','C#7'],
+        'C#m-arpeggio-minor': ['C#3','E3','G#3','C#4','E4','G#4','C#5','E5','G#5','C#6','E6','G#6','C#7'],
+        
+        'Cb-scale': ['Cb3','Db3','Eb3','Fb3','Gb3','Ab3','Bb3','Cb4','Db4','Eb4','Fb4','Gb4','Ab4','Bb4','Cb5','Db5','Eb5','Fb5','Gb5','Ab5','Bb5','Cb6','Db6','Eb6','Fb6','Gb6','Ab6','Bb6','Cb7'],
+        'Cb-arpeggio-major': ['Cb3','Eb3','Gb3','Cb4','Eb4','Gb4','Cb5','Eb5','Gb5','Cb6','Eb6','Gb6','Cb7'],
+        'Cb-arpeggio-minor': ['Cb3','Ebb3','Gb3','Cb4','Ebb4','Gb4','Cb5','Ebb5','Gb5','Cb6','Ebb6','Gb6','Cb7'],
+        
         'Cbm-scale': ['Cb3','Db3','Ebb3','Fb3','Gb3','Abb3','Bbb3','Cb4','Db4','Ebb4','Fb4','Gb4','Abb4','Bbb4','Cb5','Db5','Ebb5','Fb5','Gb5','Abb5','Bbb5','Cb6','Db6','Ebb6','Fb6','Gb6','Abb6','Bbb6','Cb7'],
-
+        'Cbm-arpeggio-major': ['Cb3','Ebb3','Gb3','Cb4','Ebb4','Gb4','Cb5','Ebb5','Gb5','Cb6','Ebb6','Gb6','Cb7'],
+        'Cbm-arpeggio-minor': ['Cb3','Ebb3','Gb3','Cb4','Ebb4','Gb4','Cb5','Ebb5','Gb5','Cb6','Ebb6','Gb6','Cb7'],
         
 
-
-        // Major arpeggios (root - major third - perfect fifth across octaves)
-        'C-arpeggio-major': ['C3','E3','G3','C4','E4','G4','C5','E5','G5','C6','E6','G6','C7'],
+        'G-scale': ['G3','A3','B3','C4','D4','E4','F#4','G4','A4','B4','C5','D5','E5','F#5','G5','A5','B5','C6','D6','E6','F#6','G6',/*'A6','B6','C7','D7','E7','F#7','G7'*/],
         'G-arpeggio-major': ['G3','B3','D4','G4','B4','D5','G5','B5','D6','G6','B6','D7','G7'],
-        'D-arpeggio-major': ['D3','F#3','A3','D4','F#4','A4','D5','F#5','A5','D6','F#6','A6','D7'],
-        'A-arpeggio-major': ['A3','C#4','E4','A4','C#5','E5','A5','C#6','E6','A6','C#7','E7','A7'],
-        'E-arpeggio-major': ['E3','G#3','B3','E4','G#4','B4','E5','G#5','B5','E6','G#6','B6','E7'],
-        'B-arpeggio-major': ['B3','D#4','F#4','B4','D#5','F#5','B5','D#6','F#6','B6','D#7','F#7','B7'],
-        'F#-arpeggio-major': ['F#3','A#3','C#4','F#4','A#4','C#5','F#5','A#5','C#6','F#6','A#6','C#7','F#7'],
-        'C#-arpeggio-major': ['C#3','E#3','G#3','C#4','E#4','G#4','C#5','E#5','G#5','C#6','E#6','G#6','C#7'],
-        'F-arpeggio-major': ['F3','A3','C4','F4','A4','C5','F5','A5','C6','F6','A6','C7','F7'],
-        'Bb-arpeggio-major': ['Bb3','D4','F4','Bb4','D5','F5','Bb5','D6','F6','Bb6','D7','F7','Bb7'],
-        'Eb-arpeggio-major': ['Eb3','G3','Bb3','Eb4','G4','Bb4','Eb5','G5','Bb5','Eb6','G6','Bb6','Eb7'],
-        'Ab-arpeggio-major': ['Ab3','C4','Eb4','Ab4','C5','Eb5','Ab5','C6','Eb6','Ab6','C7','Eb7','Ab7'],
-        'Db-arpeggio-major': ['Db3','F3','Ab3','Db4','F4','Ab4','Db5','F5','Ab5','Db6','F6','Ab6','Db7'],
-        'Gb-arpeggio-major': ['Gb3','Bb3','Db4','Gb4','Bb4','Db5','Gb5','Bb5','Db6','Gb6','Bb6','Db7','Gb7'],
-        'Cb-arpeggio-major': ['Cb3','Eb3','Gb3','Cb4','Eb4','Gb4','Cb5','Eb5','Gb5','Cb6','Eb6','Gb6','Cb7'],
-        'Cm-arpeggio-major': ['C3','Eb3','G3','C4','Eb4','G4','C5','Eb5','G5','C6','Eb6','G6','C7'],
-        'Gm-arpeggio-major': ['G3','Bb3','D4','G4','Bb4','D5','G5','Bb5','D6','G6','Bb6','D7','G7'],
-        'Dm-arpeggio-major': ['D3','F3','A3','D4','F4','A4','D5','F5','A5','D6','F6','A6','D7'],
-        'Am-arpeggio-major': ['A3','C4','E4','A4','C5','E5','A5','C6','E6','A6','C7','E7','A7'],
-        'Em-arpeggio-major': ['E3','G3','B3','E4','G4','B4','E5','G5','B5','E6','G6','B6','E7'],
-        'Bm-arpeggio-major': ['B3','D4','F#4','B4','D5','F#5','B5','D6','F#6','B6','D7','F#7','B7'],
-        'F#m-arpeggio-major': ['F#3','A3','C#4','F#4','A4','C#5','F#5','A5','C#6','F#6','A6','C#7','F#7'],
-        'C#m-arpeggio-major': ['C#3','E3','G#3','C#4','E4','G#4','C#5','E5','G#5','C#6','E6','G#6','C#7'],
-        'Fm-arpeggio-major': ['F3','Ab3','C4','F4','Ab4','C5','F5','Ab5','C6','F6','Ab6','C7','F7'],
-        'Bbm-arpeggio-major': ['Bb3','Db4','F4','Bb4','Db5','F5','Bb5','Db6','F6','Bb6','Db7','F7','Bb7'],
-        'Ebm-arpeggio-major': ['Eb3','Gb3','Bb3','Eb4','Gb4','Bb4','Eb5','Gb5','Bb5','Eb6','Gb6','Bb6','Eb7'],
-        'Abm-arpeggio-major': ['Ab3','Cb4','Eb4','Ab4','Cb5','Eb5','Ab5','Cb6','Eb6','Ab6','Cb7','Eb7','Ab7'],
-        'Dbm-arpeggio-major': ['Db3','Ebb3','Fb3','Db4','Ebb4','Fb4','Db5','Ebb5','Fb5','Db6','Ebb6','Fb6','Db7'],
-        'Gbm-arpeggio-major': ['Gb3','Bbb3','Db4','Gb4','Bbb4','Db5','Gb5','Bbb5','Db6','Gb6','Bbb6','Db7','Gb7'],
-        'Cbm-arpeggio-major': ['Cb3','Ebb3','Gb3','Cb4','Ebb4','Gb4','Cb5','Ebb5','Gb5','Cb6','Ebb6','Gb6','Cb7'],
-      
-
-        // Minor arpeggios (root - minor third - perfect fifth)
-        'C-arpeggio-minor': ['C3','Eb3','G3','C4','Eb4','G4','C5','Eb5','G5','C6','Eb6','G6','C7'],
         'G-arpeggio-minor': ['G3','Bb3','D4','G4','Bb4','D5','G5','Bb5','D6','G6','Bb6','D7','G7'],
-        'D-arpeggio-minor': ['D3','F3','A3','D4','F4','A4','D5','F5','A5','D6','F6','A6','D7'],
-        'A-arpeggio-minor': ['A3','C4','E4','A4','C5','E5','A5','C6','E6','A6','C7','E7','A7'],
-        'E-arpeggio-minor': ['E3','G3','B3','E4','G4','B4','E5','G5','B5','E6','G6','B6','E7'],
-        'B-arpeggio-minor': ['B3','D4','F#4','B4','D5','F#5','B5','D6','F#6','B6','D7','F#7','B7'],
-        'F#-arpeggio-minor': ['F#3','A3','C#4','F#4','A4','C#5','F#5','A5','C#6','F#6','A6','C#7','F#7'],
-        'C#-arpeggio-minor': ['C#3','E3','G#3','C#4','E4','G#4','C#5','E5','G#5','C#6','E6','G#6','C#7'],
-        'F-arpeggio-minor': ['F3','Ab3','C4','F4','Ab4','C5','F5','Ab5','C6','F6','Ab6','C7','F7'],
-        'Bb-arpeggio-minor': ['Bb3','Db4','F4','Bb4','Db5','F5','Bb5','Db6','F6','Bb6','Db7','F7','Bb7'],
-        'Eb-arpeggio-minor': ['Eb3','Gb3','Bb3','Eb4','Gb4','Bb4','Eb5','Gb5','Bb5','Eb6','Gb6','Bb6','Eb7'],
-        'Ab-arpeggio-minor': ['Ab3','Cb4','Eb4','Ab4','Cb5','Eb5','Ab5','Cb6','Eb6','Ab6','Cb7','Eb7','Ab7'],
-        'Db-arpeggio-minor': ['Db3','Ebb3','Fb3','Db4','Ebb4','Fb4','Db5','Ebb5','Fb5','Db6','Ebb6','Fb6','Db7'],
-        'Gb-arpeggio-minor': ['Gb3','Bbb3','Db4','Gb4','Bbb4','Db5','Gb5','Bbb5','Db6','Gb6','Bbb6','Db7','Gb7'],
-        'Cb-arpeggio-minor': ['Cb3','Ebb3','Gb3','Cb4','Ebb4','Gb4','Cb5','Ebb5','Gb5','Cb6','Ebb6','Gb6','Cb7'],
-        'Cm-arpeggio-minor': ['C3','Eb3','G3','C4','Eb4','G4','C5','Eb5','G5','C6','Eb6','G6','C7'],
+        
+        'Gm-scale': ['G3','A3','Bb3','C4','D4','Eb4','F4','G4','A4','Bb4','C5','D5','Eb5','F5','G5','A5','Bb5','C6','D6','Eb6','F6','G6',/*'A6','Bb6','C7','D7','Eb7','F7','G7'*/],
+        'Gm-arpeggio-major': ['G3','Bb3','D4','G4','Bb4','D5','G5','Bb5','D6','G6','Bb6','D7','G7'],
         'Gm-arpeggio-minor': ['G3','Bb3','D4','G4','Bb4','D5','G5','Bb5','D6','G6','Bb6','D7','G7'],
-        'Dm-arpeggio-minor': ['D3','F3','A3','D4','F4','A4','D5','F5','A5','D6','F6','A6','D7'],    
-        'Am-arpeggio-minor': ['A3','C4','E4','A4','C5','E5','A5','C6','E6','A6','C7','E7','A7'],
-        'Em-arpeggio-minor': ['E3','G3','B3','E4','G4','B4','E5','G5','B5','E6','G6','B6','E7'],
-        'Bm-arpeggio-minor': ['B3','D4','F#4','B4','D5','F#5','B5','D6','F#6','B6','D7','F#7','B7'],
-        'F#m-arpeggio-minor': ['F#3','A3','C#4','F#4','A4','C#5','F#5','A5','C#6','F#6','A6','C#7','F#7'],
-        'C#m-arpeggio-minor': ['C#3','E3','G#3','C#4','E4','G#4','C#5','E5','G#5','C#6','E6','G#6','C#7'],
-        'Fm-arpeggio-minor': ['F3','Ab3','C4','F4','Ab4','C5','F5','Ab5','C6','F6','Ab6','C7','F7'],
-        'Bbm-arpeggio-minor': ['Bb3','Db4','F4','Bb4','Db5','F5','Bb5','Db6','F6','Bb6','Db7','F7','Bb7'],  
-        'Ebm-arpeggio-minor': ['Eb3','Gb3','Bb3','Eb4','Gb4','Bb4','Eb5','Gb5','Bb5','Eb6','Gb6','Bb6','Eb7'],
-        'Abm-arpeggio-minor': ['Ab3','Cb4','Eb4','Ab4','Cb5','Eb5','Ab5','Cb6','Eb6','Ab6','Cb7','Eb7','Ab7'],
-        'Dbm-arpeggio-minor': ['Db3','Ebb3','Fb3','Db4','Ebb4','Fb4','Db5','Ebb5','Fb5','Db6','Ebb6','Fb6','Db7'],
+        
+        'Gb-scale': ['Gb3','Ab3','Bb3','Cb4','Db4','Eb4','F4','Gb4','Ab4','Bb4','Cb5','Db5','Eb5','F5','Gb5','Ab5','Bb5','Cb6','Db6','Eb6','F6','Gb6','Ab6','Bb6','Cb7','Db7','Eb7','F7','Gb7'],
+        'Gb-arpeggio-major': ['Gb3','Bb3','Db4','Gb4','Bb4','Db5','Gb5','Bb5','Db6','Gb6','Bb6','Db7','Gb7'],
+        'Gb-arpeggio-minor': ['Gb3','Bbb3','Db4','Gb4','Bbb4','Db5','Gb5','Bbb5','Db6','Gb6','Bbb6','Db7','Gb7'],
+        
+        'Gbm-scale': ['Gb3','Ab3','Bbb3','Cb4','Db4','Ebb4','Fb4','Gb4','Ab4','Bbb4','Cb5','Db5','Ebb5','Fb5','Gb5','Ab5','Bbb5','Cb6','Db6','Ebb6','Fb6','Gb6','Ab6','Bbb6','Cb7'],
+        'Gbm-arpeggio-major': ['Gb3','Bbb3','Db4','Gb4','Bbb4','Db5','Gb5','Bbb5','Db6','Gb6','Bbb6','Db7','Gb7'],
         'Gbm-arpeggio-minor': ['Gb3','Bbb3','Db4','Gb4','Bbb4','Db5','Gb5','Bbb5','Db6','Gb6','Bbb6','Db7','Gb7'],
-        'Cbm-arpeggio-minor': ['Cb3','Ebb3','Gb3','Cb4','Ebb4','Gb4','Cb5','Ebb5','Gb5','Cb6','Ebb6','Gb6','Cb7'],
+        
+        'G#-scale': ['G#3','A#3','B#3','C#4','D#4','E#4','F##4','G#4','A#4','B#4','C#5','D#5','E#5','F##5','G#5','A#5','B#5','C#6','D#6','E#6','F##6','G#6',/*'A#6','B#6','C#7','D#7','E#7','F##7','G#7'*/],
+        'G#-arpeggio-major': ['G#3','B#3','D#4','G#4','B#4','D#5','G#5','B#5','D#6','G#6','B#6','D#7','G#7'],
+        'G#-arpeggio-minor': ['G#3','Bb3','D#4','G#4','Bb4','D5','G#5','Bb5','D6','G#6','Bb6','D7','G#7'],
+
+        'G#m-scale': ['G#3','A#3','Bb3','C#4','D#4','E4','F#4','G#4','A#4','Bb4','C#5','D#5','E5','F#5','G#5','A#5','Bb5','C#6','D#6','E6','F#6','G#6',/*'A#6','Bb6','C#7','D#7','E7','F#7','G#7'*/],
+        'G#m-arpeggio-major': ['G#3','Bb3','D#4','G#4','Bb4','D5','G#5','Bb5','D6','G#6','Bb6','D7','G#7'],
+        'G#m-arpeggio-minor': ['G#3','Bb3','D#4','G#4','Bb4','D5','G#5','Bb5','D6','G#6','Bb6','D7','G#7'],
+
+
+        'D-scale': ['D3','E3','F#3','G3','A3','B3','C#4','D4','E4','F#4','G4','A4','B4','C#5','D5','E5','F#5','G5','A5','B5','C#6','D6','E6','F#6','G6','A6','B6','C#7','D7'],
+        'D-arpeggio-major': ['D3','F#3','A3','D4','F#4','A4','D5','F#5','A5','D6','F#6','A6','D7'],
+        'D-arpeggio-minor': ['D3','F3','A3','D4','F4','A4','D5','F5','A5','D6','F6','A6','D7'],
+        
+        'Dm-scale': ['D3','E3','F3','G3','A3','Bb3','C4','D4','E4','F4','G4','A4','Bb4','C5','D5','E5','F5','G5','A5','Bb5','C6','D6','E6','F6','G6','A6','Bb6','C7'],
+        'Dm-arpeggio-major': ['D3','F3','A3','D4','F4','A4','D5','F5','A5','D6','F6','A6','D7'],
+        'Dm-arpeggio-minor': ['D3','F3','A3','D4','F4','A4','D5','F5','A5','D6','F6','A6','D7'],    
+        
+        'Db-scale': ['Db3','Eb3','F3','Gb3','Ab3','Bb3','C4','Db4','Eb4','F4','Gb4','Ab4','Bb4','C5','Db5','Eb5','F5','Gb5','Ab5','Bb5','C6','Db6','Eb6','F6','Gb6','Ab6','Bb6','C7','Db7'],
+        'Db-arpeggio-major': ['Db3','F3','Ab3','Db4','F4','Ab4','Db5','F5','Ab5','Db6','F6','Ab6','Db7'],
+        'Db-arpeggio-minor': ['Db3','Ebb3','Fb3','Db4','Ebb4','Fb4','Db5','Ebb5','Fb5','Db6','Ebb6','Fb6','Db7'],
+        
+        'Dbm-scale': ['Db3','Eb3','Fb3','Gb3','Ab3','Bbb3','Cb4','Db4','Eb4','Fb4','Gb4','Ab4','Bbb4','Cb5','Db5','Eb5','Fb5','Gb5','Ab5','Bbb5','Cb6','Db6','Eb6','Fb6','Gb6','Ab6','Bbb6','Cb7'],
+        'Dbm-arpeggio-major': ['Db3','Ebb3','Fb3','Db4','Ebb4','Fb4','Db5','Ebb5','Fb5','Db6','Ebb6','Fb6','Db7'],
+        'Dbm-arpeggio-minor': ['Db3','Ebb3','Fb3','Db4','Ebb4','Fb4','Db5','Ebb5','Fb5','Db6','Ebb6','Fb6','Db7'],
+        
+        'D#-scale': ['D#3','E#3','F##3','G#3','A#3','B#3','C##4','D#4','E#4','F##4','G#4','A#4','B#4','C##5','D#5','E#5','F##5','G#5','A#5','B#5','C##6','D#6','E#6','F##6','G#6','A#6','B#6','C##7','D#7'],
+        'D#-arpeggio-major': ['D#3','F##3','A#3','D#4','F##4','A#4','D#5','F##5','A#5','D#6','F##6','A#6','D#7'],
+        'D#-arpeggio-minor': ['D#3','F#3','A#3','D#4','F#4','A#4','D#5','F#5','A#5','D#6','F#6','A#6','D#7'],
+
+        'D#m-scale': ['D#3','E#3','F#3','G#3','A#3','B3','C#4','D#4','E#4','F#4','G#4','A#4','B4','C#5','D#5','E#5','F#5','G#5','A#5','B5','C#6','D#6','E#6','F#6','G#6','A#6','B6','C#7'],
+        'D#m-arpeggio-major': ['D#3','F#3','A#3','D#4','F#4','A#4','D#5','F#5','A#5','D#6','F#6','A#6','D#7'],
+        'D#m-arpeggio-minor': ['D#3','F#3','A#3','D#4','F#4','A#4','D#5','F#5','A#5','D#6','F#6','A#6','D#7'],
+
+
+        'A-scale': ['A3','B3','C#4','D4','E4','F#4','G#4','A4','B4','C#5','D5','E5','F#5','G#5','A5','B5','C#6','D6','E6','F#6','G#6','A6','B6','C#7','D7','E7','F#7','G#7','A7'],
+        'A-arpeggio-major': ['A3','C#4','E4','A4','C#5','E5','A5','C#6','E6','A6','C#7','E7','A7'],
+        'A-arpeggio-minor': ['A3','C4','E4','A4','C5','E5','A5','C6','E6','A6','C7','E7','A7'],
+        
+        'Am-scale': ['A3','B3','C4','D4','E4','F4','G4','A4','B4','C5','D5','E5','F5','G5','A5','B5','C6','D6','E6','F6','G6','A6','B6','C7','D7','E7','F7','G7','A7'],
+        'Am-arpeggio-major': ['A3','C4','E4','A4','C5','E5','A5','C6','E6','A6','C7','E7','A7'],
+        'Am-arpeggio-minor': ['A3','C4','E4','A4','C5','E5','A5','C6','E6','A6','C7','E7','A7'],
+        
+        'Ab-scale': ['Ab3','Bb3','C4','Db4','Eb4','F4','G4','Ab4','Bb4','C5','Db5','Eb5','F5','G5','Ab5','Bb5','C6','Db6','Eb6','F6','G6','Ab6','Bb6','C7','Db7','Eb7','F7','G7','Ab7'],
+        'Ab-arpeggio-major': ['Ab3','C4','Eb4','Ab4','C5','Eb5','Ab5','C6','Eb6','Ab6','C7','Eb7','Ab7'],
+        'Ab-arpeggio-minor': ['Ab3','Cb4','Eb4','Ab4','Cb5','Eb5','Ab5','Cb6','Eb6','Ab6','Cb7','Eb7','Ab7'],
+        
+        'Abm-scale': ['Ab3','Bb3','Cb4','Db4','Eb4','Fb4','Gb4','Ab4','Bb4','Cb5','Db5','Eb5','Fb5','Gb5','Ab5','Bb5','Cb6','Db6','Eb6','Fb6','Gb6','Ab6','Bb6','Cb7','Db7','Eb7','Fb7','Gb7','Ab7'],
+        'Abm-arpeggio-major': ['Ab3','Cb4','Eb4','Ab4','Cb5','Eb5','Ab5','Cb6','Eb6','Ab6','Cb7','Eb7','Ab7'],
+        'Abm-arpeggio-minor': ['Ab3','Cb4','Eb4','Ab4','Cb5','Eb5','Ab5','Cb6','Eb6','Ab6','Cb7','Eb7','Ab7'],
+        
+        'A#-scale': ['A#3','B#3','C##4','D#4','E#4','F##4','G##4','A#4','B#4','C##5','D#5','E#5','F##5','G##5','A#5','B#5','C##6','D#6','E#6','F##6','G##6','A#6','B#6','C##7','D#7','E#7','F##7','G##7','A#7'],
+        'A#-arpeggio-major': ['A#3','C##4','E#4','A#4','C##5','E#5','A#5','C##6','E#6','A#6','C##7','E#7','A#7'],
+        'A#-arpeggio-minor': ['A#3','C#4','E#4','A#4','C#5','E#5','A#5','C#6','E#6','A#6','C#7','E#7','A#7'], 
+        
+        'A#m-scale': ['A#3','B#3','C#4','D#4','E#4','F#4','G#4','A#4','B#4','C#5','D#5','E#5','F#5','G#5','A#5','B#5','C#6','D#6','E#6','F#6','G#6','A#6','B#6','C#7','D#7','E#7','F#7','G#7','A#7'],
+        'A#m-arpeggio-major': ['A#3','C#4','E#4','A#4','C#5','E#5','A#5','C#6','E#6','A#6','C#7','E#7','A#7'],
+        'A#m-arpeggio-minor': ['A#3','C#4','E#4','A#4','C#5','E#5','A#5','C#6','E#6','A#6','C#7','E#7','A#7'],  
+
+
+        'E-scale': ['E3','F#3','G#3','A3','B3','C#4','D#4','E4','F#4','G#4','A4','B4','C#5','D#5','E5','F#5','G#5','A5','B5','C#6','D#6','E6','F#6','G#6','A6','B6','C#7','D#7','E7'],
+        'E-arpeggio-major': ['E3','G#3','B3','E4','G#4','B4','E5','G#5','B5','E6','G#6','B6','E7'],
+        'E-arpeggio-minor': ['E3','G3','B3','E4','G4','B4','E5','G5','B5','E6','G6','B6','E7'],
+        
+        'Em-scale': ['E3','F#3','G3','A3','B3','C4','D4','E4','F#4','G4','A4','B4','C5','D5','E5','F#5','G5','A5','B5','C6','D6','E6','F#6','G6','A6','B6','C7','D7','E7','F#7','G7'],
+        'Em-arpeggio-major': ['E3','G3','B3','E4','G4','B4','E5','G5','B5','E6','G6','B6','E7'],
+        'Em-arpeggio-minor': ['E3','G3','B3','E4','G4','B4','E5','G5','B5','E6','G6','B6','E7'],
+        
+        'Eb-scale': ['Eb3','F3','G3','Ab3','Bb3','C4','D4','Eb4','F4','G4','Ab4','Bb4','C5','D5','Eb5','F5','G5','Ab5','Bb5','C6','D6','Eb6','F6','G6','Ab6','Bb6','C7','D7','Eb7'],
+        'Eb-arpeggio-major': ['Eb3','G3','Bb3','Eb4','G4','Bb4','Eb5','G5','Bb5','Eb6','G6','Bb6','Eb7'],
+        'Eb-arpeggio-minor': ['Eb3','Gb3','Bb3','Eb4','Gb4','Bb4','Eb5','Gb5','Bb5','Eb6','Gb6','Bb6','Eb7'],
+        
+        'Ebm-scale': ['Eb3','F3','Gb3','Ab3','Bb3','Cb4','Db4','Eb4','F4','Gb4','Ab4','Bb4','Cb5','Db5','Eb5','F5','Gb5','Ab5','Bb5','Cb6','Db6','Eb6','F6','Gb6','Ab6','Bb6','Cb7','Db7','Eb7','F7'],
+        'Ebm-arpeggio-major': ['Eb3','Gb3','Bb3','Eb4','Gb4','Bb4','Eb5','Gb5','Bb5','Eb6','Gb6','Bb6','Eb7'],
+        'Ebm-arpeggio-minor': ['Eb3','Gb3','Bb3','Eb4','Gb4','Bb4','Eb5','Gb5','Bb5','Eb6','Gb6','Bb6','Eb7'],
+        
+        'E#-scale': ['E#3','F##3','G##3','A#3','B#3','C##4','D##4','E#4','F##4','G##4','A#4','B#4','C##5','D##5','E#5','F##5','G##5','A#5','B#5','C##6','D##6','E#6','F##6','G##6','A#6','B#6','C##7','D##7','E#7'],
+        'E#-arpeggio-major': ['E#3','G##3','B#3','E#4','G##4','B#4','E#5','G##5','B#5','E#6','G##6','B#6','E#7'],
+        'E#-arpeggio-minor': ['E#3','G#3','B#3','E#4','G#4','B#4','E#5','G#5','B#5','E#6','G#6','B#6','E#7'],
+
+        'E#m-scale': ['E#3','F##3','G#3','A#3','B#3','C#4','D#4','E#4','F##4','G#4','A#4','B#4','C#5','D#5','E#5','F##5','G#5','A#5','B#5','C#6','D#6','E#6','F##6','G#6','A#6','B#6','C#7','D#7','E#7'],
+        'E#m-arpeggio-major': ['E#3','G#3','B#3','E#4','G#4','B#4','E#5','G#5','B#5','E#6','G#6','B#6','E#7'],
+        'E#m-arpeggio-minor': ['E#3','G#3','B#3','E#4','G#4','B#4','E#5','G#5','B#5','E#6','G#6','B#6','E#7'],
+
+
+        'B-scale': ['B3','C#4','D#4','E4','F#4','G#4','A#4','B4','C#5','D#5','E5','F#5','G#5','A#5','B5','C#6','D#6','E6','F#6','G#6','A#6','B6','C#7','D#7','E7','F#7','G#7','A#7','B7'],
+        'B-arpeggio-major': ['B3','D#4','F#4','B4','D#5','F#5','B5','D#6','F#6','B6','D#7','F#7','B7'],
+        'B-arpeggio-minor': ['B3','D4','F#4','B4','D5','F#5','B5','D6','F#6','B6','D7','F#7','B7'],
+        
+        'Bm-scale': ['B3','C#4','D4','E4','F#4','G4','A4','B4','C#5','D5','E5','F#5','G5','A5','B5','C#6','D6','E6','F#6','G6','A6','B6','C#7','D7','E7','F#7','G7','A7','B7'],
+        'Bm-arpeggio-major': ['B3','D4','F#4','B4','D5','F#5','B5','D6','F#6','B6','D7','F#7','B7'],
+        'Bm-arpeggio-minor': ['B3','D4','F#4','B4','D5','F#5','B5','D6','F#6','B6','D7','F#7','B7'],
+        
+        'Bb-scale': ['Bb3','C4','D4','Eb4','F4','G4','A4','Bb4','C5','D5','Eb5','F5','G5','A5','Bb5','C6','D6','Eb6','F6','G6','A6','Bb6','C7','D7','Eb7','F7','G7','A7','Bb7'],
+        'Bb-arpeggio-major': ['Bb3','D4','F4','Bb4','D5','F5','Bb5','D6','F6','Bb6','D7','F7','Bb7'],
+        'Bb-arpeggio-minor': ['Bb3','Db4','F4','Bb4','Db5','F5','Bb5','Db6','F6','Bb6','Db7','F7','Bb7'],
+        
+        'Bbm-scale': ['Bb3','C4','Db4','Eb4','F4','Gb4','Ab4','Bb4','C5','Db5','Eb5','F5','Gb5','Ab5','Bb5','C6','Db6','Eb6','F6','Gb6','Ab6','Bb6','C7','Db7','Eb7','F7'],
+        'Bbm-arpeggio-major': ['Bb3','Db4','F4','Bb4','Db5','F5','Bb5','Db6','F6','Bb6','Db7','F7','Bb7'],
+        'Bbm-arpeggio-minor': ['Bb3','Db4','F4','Bb4','Db5','F5','Bb5','Db6','F6','Bb6','Db7','F7','Bb7'],  
+        
+        'B#-scale': ['B#3','C##4','D##4','E#4','F##4','G##4','A##4','B#4','C##5','D##5','E#5','F##5','G##5','A##5','B#5','C##6','D##6','E#6','F##6','G##6','A##6','B#6','C##7','D##7','E#7','F##7','G##7','A##7','B#7'],
+        'B#-arpeggio-major': ['B#3','D##4','F##4','B#4','D##5','F##5','B#5','D##6','F##6','B#6','D##7','F##7','B#7'],
+        'B#-arpeggio-minor': ['B#3','D#4','F##4','B#4','D#5','F##5','B#5','D#6','F##6','B#6','D#7','F##7','B#7'],
+
+        'B#m-scale': ['B#3','C##4','D#4','E#4','F##4','G#4','A#4','B#4','C##5','D#5','E#5','F##5','G#5','A#5','B#5','C##6','D#6','E#6','F##6','G#6','A#6','B#6','C##7','D#7','E#7','F##7','G#7','A#7'],
+        'B#m-arpeggio-major': ['B#3','D#4','F##4','B#4','D#5','F##5','B#5','D#6','F##6','B#6','D#7','F##7','B#7'],
+        'B#m-arpeggio-minor': ['B#3','D#4','F##4','B#4','D#5','F##5','B#5','D#6','F##6','B#6','D#7','F##7','B#7'],
+
+        
+        'F-scale': ['F3','G3','A3','Bb3','C4','D4','E4','F4','G4','A4','Bb4','C5','D5','E5','F5','G5','A5','Bb5','C6','D6','E6','F6','G6','A6','Bb6','C7','D7','E7','F7'],
+        'F-arpeggio-major': ['F3','A3','C4','F4','A4','C5','F5','A5','C6','F6','A6','C7','F7'],
+        'F-arpeggio-minor': ['F3','Ab3','C4','F4','Ab4','C5','F5','Ab5','C6','F6','Ab6','C7','F7'],
+        
+        'Fm-scale': ['F3','G3','Ab3','Bb3','C4','Db4','Eb4','F4','G4','Ab4','Bb4','C5','Db5','Eb5','F5','G5','Ab5','Bb5','C6','Db6','Eb6','F6','G6','Ab6','Bb6','C7','Db7','Eb7','F7'],
+        'Fm-arpeggio-major': ['F3','Ab3','C4','F4','Ab4','C5','F5','Ab5','C6','F6','Ab6','C7','F7'],
+        'Fm-arpeggio-minor': ['F3','Ab3','C4','F4','Ab4','C5','F5','Ab5','C6','F6','Ab6','C7','F7'],
+        
+        'F#-scale': ['F#3','G#3','A#3','B3','C#4','D#4','E#4','F#4','G#4','A#4','B4','C#5','D#5','E#5','F#5','G#5','A#5','B5','C#6','D#6','E#6','F#6','G#6','A#6','B6','C#7','D#7','E#7','F#7'],
+        'F#-arpeggio-major': ['F#3','A#3','C#4','F#4','A#4','C#5','F#5','A#5','C#6','F#6','A#6','C#7','F#7'],
+        'F#-arpeggio-minor': ['F#3','A3','C#4','F#4','A4','C#5','F#5','A5','C#6','F#6','A6','C#7','F#7'],
+        
+        'F#m-scale': ['F#3','G#3','A3','B3','C#4','D4','E4','F#4','G#4','A4','B4','C#5','D5','E5','F#5','G#5','A5','B5','C#6','D6','E6','F#6','G#6','A6','B6','C#7','D7','E7','F#7','G7'],
+        'F#m-arpeggio-major': ['F#3','A3','C#4','F#4','A4','C#5','F#5','A5','C#6','F#6','A6','C#7','F#7'],
+        'F#m-arpeggio-minor': ['F#3','A3','C#4','F#4','A4','C#5','F#5','A5','C#6','F#6','A6','C#7','F#7'],
+
+        'Fb-scale': ['Fb3','Gb3','Ab3','Bbb3','Cb4','Db4','Eb4','Fb4','Gb4','Ab4','Bbb4','Cb5','Db5','Eb5','Fb5','Gb5','Ab5','Bbb5','Cb6','Db6','Eb6','Fb6','Gb6','Ab6','Bbb6','Cb7','Db7','Eb7','Fb7'],
+        'Fb-arpeggio-major': ['Fb3','Ab3','Cb4','Fb4','Ab4','Cb5','Fb5','Ab5','Cb6','Fb6','Ab6','Cb7','Fb7'],
+        'Fb-arpeggio-minor': ['Fb3','Abb3','Cb4','Fb4','Abb4','Cb5','Fb5','Abb5','Cb6','Fb6','Abb6','Cb7','Fb7'],
+
+        'Fbm-scale': ['Fb3','Gb3','Abb3','Bbb3','Cb4','Dbb4','Ebb4','Fb4','Gb4','Abb4','Bbb4','Cb5','Dbb5','Ebb5','Fb5','Gb5','Abb5','Bbb5','Cb6','Dbb6','Ebb6','Fb6','Gb6','Abb6','Bbb6','Cb7','Dbb7','Ebb7','Fb7'],
+        'Fbm-arpeggio-major': ['Fb3','Abb3','Cb4','Fb4','Abb4','Cb5','Fb5','Abb5','Cb6','Fb6','Abb6','Cb7','Fb7'],
+        'Fbm-arpeggio-minor': ['Fb3','Abb3','Cb4','Fb4','Abb4','Cb5','Fb5','Abb5','Cb6','Fb6','Abb6','Cb7','Fb7'],
       };
       
       // https://mixbutton.com/mixing-articles/music-note-to-frequency-chart/
