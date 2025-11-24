@@ -65,7 +65,7 @@
           <span>
             <select id="select-scale" oninput="selectScale(event)"> 
               <option value="chromatic">Chromatic</option>
-              
+
               <option value="C">C Major</option>
               <option value="Cm">C Minor</option>
               <option value="G">G Major</option>
@@ -125,6 +125,10 @@
           <!-- <span>Volume: <input type="range" id="volume" value="0.5" min="0" max="1" step="0.01" oninput="setVolume(event)"></span> -->
           <button id="start-stop" onclick="startOrStop()">Start</button> 
           <button id="pause" onclick="puaseUnpause()">Pause</button>
+          <label><span><input type="radio" name="repeat-times" id="repeat-1" value="1" oninput="selectRepeat(event)" checked></span><span>x 1</span></label>
+          <label><span><input type="radio" name="repeat-times" id="repeat-3" value="3" oninput="selectRepeat(event)"></span><span>x 3</span></label>
+          <label><span><input type="radio" name="repeat-times" id="repeat-5" value="5" oninput="selectRepeat(event)"></span><span>x 5</span></label>
+          <label><span><input type="radio" name="repeat-times" id="repeat-7" value="7" oninput="selectRepeat(event)"></span><span>x 7</span></label>
         </p>
       </div>
       <div>
@@ -145,6 +149,8 @@
         currentIndex: 0,
         audioCtx: null,
         gainNode: null,
+        repeat: 1,
+        currentRepeat: 1,
         
         playTone: true,
         chromatic: false,
@@ -196,12 +202,12 @@
         
 
         'G-scale': ['G3','A3','B3','C4','D4','E4','F#4','G4','A4','B4','C5','D5','E5','F#5','G5','A5','B5','C6','D6','E6','F#6','G6',/*'A6','B6','C7','D7','E7','F#7','G7'*/],
-        'G-arpeggio-major': ['G3','B3','D4','G4','B4','D5','G5','B5','D6','G6','B6','D7','G7'],
-        'G-arpeggio-minor': ['G3','Bb3','D4','G4','Bb4','D5','G5','Bb5','D6','G6','Bb6','D7','G7'],
+        'G-arpeggio-major': ['G3','B3','D4','G4','B4','D5','G5','B5','D6','G6',/*'B6','D7','G7'*/],
+        'G-arpeggio-minor': ['G3','Bb3','D4','G4','Bb4','D5','G5','Bb5','D6','G6',/*'Bb6','D7','G7'*/],
         
         'Gm-scale': ['G3','A3','Bb3','C4','D4','Eb4','F4','G4','A4','Bb4','C5','D5','Eb5','F5','G5','A5','Bb5','C6','D6','Eb6','F6','G6',/*'A6','Bb6','C7','D7','Eb7','F7','G7'*/],
-        'Gm-arpeggio-major': ['G3','Bb3','D4','G4','Bb4','D5','G5','Bb5','D6','G6','Bb6','D7','G7'],
-        'Gm-arpeggio-minor': ['G3','Bb3','D4','G4','Bb4','D5','G5','Bb5','D6','G6','Bb6','D7','G7'],
+        'Gm-arpeggio-major': ['G3','Bb3','D4','G4','Bb4','D5','G5','Bb5','D6','G6',/*'Bb6','D7','G7'*/],
+        'Gm-arpeggio-minor': ['G3','Bb3','D4','G4','Bb4','D5','G5','Bb5','D6','G6',/*'Bb6','D7','G7'*/],
         
         'Gb-scale': ['Gb3','Ab3','Bb3','Cb4','Db4','Eb4','F4','Gb4','Ab4','Bb4','Cb5','Db5','Eb5','F5','Gb5','Ab5','Bb5','Cb6','Db6','Eb6','F6','Gb6','Ab6','Bb6','Cb7','Db7','Eb7','F7','Gb7'],
         'Gb-arpeggio-major': ['Gb3','Bb3','Db4','Gb4','Bb4','Db5','Gb5','Bb5','Db6','Gb6','Bb6','Db7','Gb7'],
@@ -426,6 +432,7 @@
           const upTheScale = state.scale == 'chromatic' ? scales[state.scale] : scales[`${state.scale}-${state.mode}`];
           const downTheScale = upTheScale.slice().reverse();
           state.currentDeck = upTheScale.concat(downTheScale);
+          state.currentRepeat = 1;
 
           showCards();
         }
@@ -449,6 +456,10 @@
           state.currentIndex++;
           if (state.currentIndex < state.currentDeck.length) {
             !state.paused && showCards();
+          } else if  ((state.currentRepeat < state.repeat) && !state.paused) {
+            state.currentIndex = 1;
+            state.currentRepeat++;
+            showCards();
           } else {
             startStop.classList.remove('stop');
             state.playing = false;
@@ -547,6 +558,10 @@
         state.gainNode.gain.value = volume;
         // state.gainNode.connect(state.audioCtx.destination);
 
+      }
+
+      function selectRepeat(event) {
+        state.repeat = parseInt(event.target.value);
       }
 
 
