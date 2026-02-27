@@ -125,7 +125,7 @@
           <!-- <span>Volume: <input type="range" id="volume" value="0.5" min="0" max="1" step="0.01" oninput="setVolume(event)"></span> -->
           <button id="start-stop" onclick="startOrStop()">Start</button> 
           <button id="pause" onclick="puaseUnpause()">Pause</button>
-          <label><span><input type="radio" name="repeat-times" id="repeat-1" value="1" oninput="selectRepeat(event)" checked></span><span>x 1</span></label>
+          <label><span><input type="radio" name="repeat-times" id="repeat-1" value="1" oninput="selectRepeat(event)"></span><span>x 1</span></label>
           <label><span><input type="radio" name="repeat-times" id="repeat-3" value="3" oninput="selectRepeat(event)"></span><span>x 3</span></label>
           <label><span><input type="radio" name="repeat-times" id="repeat-5" value="5" oninput="selectRepeat(event)"></span><span>x 5</span></label>
           <label><span><input type="radio" name="repeat-times" id="repeat-7" value="7" oninput="selectRepeat(event)"></span><span>x 7</span></label>
@@ -166,6 +166,7 @@
       const vex = document.getElementById('vex');
       const timeInput = document.getElementById('display-time');
       const scaleSelect = document.getElementById('select-scale');
+      const repeats = document.getElementsByName('repeat-times');
 
       const scales = {
         'chromatic': [
@@ -407,16 +408,28 @@
 
         state.playTone = params.get('playTone') ? (params.get('playTone') === 'true' ? true : false) : state.playTone;
         playTone.checked = state.playTone;
+
+        const repeatVal = params.get('repeat') ? parseInt(params.get('repeat')) : state.repeat;
+        for(let repeat of repeats) {
+          if (repeat.value === `${repeatVal}`) {
+            state.repeat = repeatVal;
+            repeat.checked = true;
+          } else {
+            repeat.checked = false;
+          }
+        }
+        
       };
 
       function setParams() {
-        const search = [
-          `scale=${state.scale}`,
-          `mode=${state.mode}`,
-          `time=${state.time}`,
-          `playTone=${state.playTone}`,
-        ];
-        window.location.search = search.join('&');
+        const search = new URLSearchParams({
+          scale: state.scale,
+          mode: state.mode,
+          time: state.time,
+          playTone: state.playTone,
+          repeat: state.repeat,
+        });
+        history.pushState({}, '', `?${search.toString()}`);
       }
 
       function startOrStop() {
@@ -562,6 +575,7 @@
 
       function selectRepeat(event) {
         state.repeat = parseInt(event.target.value);
+        setParams();
       }
 
 

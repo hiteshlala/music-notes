@@ -175,23 +175,22 @@
       };
 
       function selectGroup() {
-        // still thinking about this one...
-        const search = [
-          `bass=${showBass.checked}`,
-          `treble=${showTreble.checked}`,
-          `alto=${showAlto.checked}`,
-          `shuffle=${IShouldShuffle.checked}`,
-          `time=${displayTime}`,
-          `flats=${includeFlats.checked}`,
-          `sharps=${includeSharps.checked}`,
-          `tone=${playTone.checked}`,
-        ];
-        window.location.search = search.join('&');
+        const search = new URLSearchParams({
+          bass: showBass.checked,
+          treble: showTreble.checked,
+          alto: showAlto.checked,
+          shuffle: IShouldShuffle.checked,
+          time: displayTime,
+          flats: includeFlats.checked,
+          sharps: includeSharps.checked,
+          tone: playTone.checked,
+        });
+        history.pushState({}, '', `?${search.toString()}`);
       }
 
       function setTime(el) {
         displayTime = parseInt(el.value);
-        // selectGroup();
+        selectGroup();
       }
 
       function shuffle(deck) {

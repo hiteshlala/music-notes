@@ -280,8 +280,7 @@
         if (slideNotes[0]) params.set('from', slideNotes[0]);
         if (slideNotes[1]) params.set('to', slideNotes[1]);
         if (repetitions) params.set('repeats', repetitions);
-        const newUrl = window.location.pathname + '?' + params.toString();
-        window.history.replaceState({}, '', newUrl);
+        history.pushState({}, '', '?' + params.toString());
       }
     </script>
   </body>
