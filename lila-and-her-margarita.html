@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no'>
+    <link rel="icon" href="logo.png" type="image/png">
+    <link rel="stylesheet" href="main.css">
+    <title>Lila and Her Margarita</title>
+  </head>
+
+  <body>
+    <div class="content">
+
+      <div class="heading">Lila and Her Margarita</div>
+      <p class="align-end"><a href="index.html">Home</a></p>
+
+      <p>Turkish Sufi song in E Hijaz</p>
+
+      <!-- <p><a target="_blank" href="https://www.youtube.com/watch?v=So1wWBc-ezU">Not sure who plays</a></p> -->
+
+      <audio id="player" controls src="lila-and-her-margarita_Lila-Sklar.m4a"></audio>
+
+      <div>
+        <label for="loop">Loop</label>
+        <input id="loop" type="checkbox" name="loop" onclick="setLoop()">
+      </div>
+
+      <div>
+        <p>
+          Speed:
+          <span class="radio">
+            <label for=".25">0.25</label>
+            <input type="radio" name="speed" id=".25" onclick="selectSpeed(0.25)">
+          </span>
+          
+          <span class="radio">
+            <label for=".5">0.5</label>
+            <input type="radio" name="speed" id=".5" onclick="selectSpeed(0.5)">
+          </span>
+          
+          <span class="radio">
+            <label for=".75">0.75</label>
+            <input type="radio" name="speed" id=".75" onclick="selectSpeed(0.75)">
+          </span>
+          
+          <span class="radio">
+            <label for="1">1</label>
+            <input type="radio" name="speed" id="1" onclick="selectSpeed(1)" checked>
+          </span>
+        </p>
+      </div>
+
+      <div id="buttons" class="buttons"></div>
+
+      <div>
+        <button class="button-padding" onclick="slider.useSliders()">Use Sliders</button>
+      </div>
+      <div id="slider" class="slider"></div>
+      <div id="vex"></div>
+
+      <!-- <img class="score" src="Pastoral-3-1953-Sha-Hankun.png"/> -->
+
+      <!-- <object type="application/pdf" data="Pastorale.pdf" width="500" height="700"></object> -->
+
+    <script src="double-slider.js"></script>
+    <script src="audio-slider.js"></script>
+    <script src="setup.js"></script>
+    <script src="learn-notes-vexflow.js"></script>
+    <script>
+      // __SONG_FRAGMENTS_BUTTONS__
+      createButton('Entire', 0, 2*60 + 36, buttons);
+
+      const slider = new AudioSlider('slider', player, 0, 2*60 + 36 );
+      slider.init();
+
+
+      // this part still a work in progress
+
+      const { Factory, EasyScore, System } = Vex.Flow;
+
+      // clef = treble, bass, alto
+      //  notes:
+      const trebleClefs = [
+        'G3', 'G#3', 'Ab3', 'A3', 'A#3', 'Bb3', 'B3', 'B#3', 'Cb4', 'C4', 'C#4',
+        'D4', 'D#4', 'Eb4', 'E4', 'E#4', 'Fb4', 'F4', 'F#4', 'Gb4', 'G4', 'G#4',
+        'A4', 'A#4', 'Bb4', 'B4', 'B#4', 'Cb5', 'C5', 'C#5', 'Db5', 'D5', 'D#5',
+        'E5', 'E#5', 'Fb5', 'F5', 'F#5', 'Gb5', 'G5', 'G#5', 'Ab5', 'A5', 'A#5',
+        'Bb5', 'B5', 'B#5', 'Cb6', 'C6', 'C#6', 'Db6', 'D6', 'D#6', 'Eb6', 'E6', 'E#6',
+      ]
+      function drawANote(note, clef) {
+        vex.innerHTML = '';
+        const vf = new Factory({
+          renderer: {
+            elementId: 'vex',
+            width: 160,
+            height: 140,
+          },
+        });
+        const score = vf.EasyScore();
+        const system = vf.System();
+        
+        system
+          .addStave({
+            voices: [
+              score.voice(score.notes(`${note}/w`, { clef })),
+              // score.voice(score.notes('C2/8, G2, D3, A3, D4/q, A4', { clef: 'bass' })),
+              // score.voice(score.notes('C3/8, G3, D4, A4, D5/q, A5', { clef: 'alto' })),
+              // score.voice(score.notes('G3/8, D4, A4, E5, A5/q, E6', { clef: 'treble' })),
+            ],
+          })
+          .addClef(clef)
+        vf.draw();
+      }
+
+      // drawANote('G4', 'treble');
+
+    </script>
+  </body>
+</html>
